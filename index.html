@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Eye Optics Laboratory</title>
+<style>
+:root{
+  --bg:#eef3f5;--paper:#fff;--ink:#162b3a;--muted:#546b7b;--line:#d5e0e6;
+  --navy:#123e55;--teal:#087e82;--orange:#bc641b;--violet:#7551ad;
+  --soft:#f4f8fa;--radius:18px;--shadow:0 8px 30px #17384b09;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button,select,input[type=number]{border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);min-height:40px}
+button{padding:8px 13px;cursor:pointer;font-weight:650}
+button:hover{border-color:var(--teal);background:#eef8f7}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.primary{background:var(--navy);color:white;border-color:var(--navy)}
+button.danger{color:#a33d36}
+:focus-visible{outline:3px solid #09999c;outline-offset:3px}
+input[type=range]{width:100%;accent-color:var(--teal);min-height:30px}
+input[type=number]{width:100%;padding:7px 10px}
+input[type=checkbox]{accent-color:var(--teal);width:17px;height:17px;flex-shrink:0}
+select{width:100%;padding:8px}
+h1,h2,h3,p{margin:0}
+h1{font-size:clamp(25px,3vw,39px);line-height:1.15;letter-spacing:-.035em}
+h2{font-size:19px;line-height:1.35}
+h3{font-size:16px;line-height:1.4}
+p+p{margin-top:10px}
+small,.small{font-size:12px;color:var(--muted)}
+.shell{max-width:1560px;margin:auto;padding:28px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:20px}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:var(--teal);margin-bottom:8px}
+.subtitle{color:var(--muted);max-width:900px;margin-top:12px}
+.language{flex-shrink:0;min-width:126px}
+.workflow{padding:15px 20px;border:1px solid var(--line);border-radius:var(--radius);background:#e6eff2;margin-bottom:20px;font-weight:600}
+.workspace{display:grid;grid-template-columns:310px minmax(0,1fr);gap:20px;align-items:start}
+.controls{display:grid;gap:15px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}
+.control-card{padding:19px}
+.section-tag{color:var(--teal);font-size:11px;font-weight:800;letter-spacing:.1em;margin-bottom:4px}
+.field{margin-top:16px}
+.field label.field-label{display:block;font-size:13px;font-weight:650;margin-bottom:6px}
+.input-row{display:grid;grid-template-columns:minmax(0,1fr) 104px;gap:10px;align-items:center}
+.hint-text{font-size:12px;color:var(--muted);margin-top:7px}
+.presets{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.presets button{padding:5px 9px;font-size:12px;min-height:33px}
+.presets button[aria-pressed=true]{background:var(--navy);color:white}
+.check{display:flex;gap:8px;align-items:center;font-size:13px;cursor:pointer}
+.button-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.error{color:#a33d36;font-size:13px;min-height:20px;margin-top:10px}
+.hint-box{padding:12px;background:#edf6f6;border:1px solid #c9e2e2;border-radius:10px;margin-top:12px}
+.hint-box p{font-size:12px}
+.hint-value{font-variant-numeric:tabular-nums;font-size:15px;font-weight:700;margin:7px 0}
+.stage{min-width:0}
+.stage-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.toggles{display:flex;gap:13px;flex-wrap:wrap}
+.comparisons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.view{overflow:hidden}
+.view-header{padding:17px 18px 12px;border-bottom:1px solid var(--line)}
+.view-heading{font-size:16px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:750;border-radius:7px;padding:4px 8px;margin-top:8px;background:#f0f4f7}
+.status.sharp{background:#e4f4ee;color:#16634c}
+.status.front{background:#fff0df;color:#8d4a0c}
+.status.behind{background:#eee8f8;color:#61428b}
+.status.none{background:#fbe9e6;color:#9b3c30}
+.diagram{display:block;width:100%;height:310px;background:#fcfdfd}
+.scale-note{padding:0 16px 10px;font-size:11px;color:var(--muted)}
+.readings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 13px;padding:10px 17px 15px;border-top:1px solid var(--line)}
+.reading{padding:8px 0;border-bottom:1px solid #eaf0f3;min-width:0}
+.reading dt{font-size:11px;color:var(--muted)}
+.reading dd{margin:3px 0 0;font-size:13px;font-weight:650;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.retinal{border-top:1px solid var(--line);padding:14px 17px}
+.retinal-layout{display:grid;grid-template-columns:112px minmax(0,1fr);gap:12px;align-items:center}
+.preview{width:112px;height:116px;display:block;border:1px solid var(--line);border-radius:10px;background:#f5f8fa}
+.retinal strong{font-size:14px}
+.capacity{font-size:12px;color:var(--muted);padding:0 17px 14px;overflow-wrap:anywhere}
+.legend{display:flex;gap:15px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:22px;border-top:2px solid var(--teal);display:inline-block}
+.swatch.dash{border-top-style:dashed;border-color:var(--violet)}
+.swatch.retina{border-color:var(--orange)}
+.notice{margin-top:14px;padding:13px 16px;background:#e5edef;border-radius:12px;font-size:12px;color:#405d6c}
+.lower{display:grid;gap:20px;margin-top:22px}
+.panel{padding:23px}
+.panel-head{display:flex;justify-content:space-between;gap:15px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.table-wrap{overflow:auto;max-width:100%;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{background:#edf3f6;color:var(--muted);font-weight:700}
+tbody tr:last-child td{border-bottom:0}
+td button{min-height:30px;font-size:12px;padding:3px 8px}
+.empty{padding:22px;color:var(--muted)}
+.activities{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.activity{border:1px solid var(--line);border-radius:12px;padding:17px;min-width:0}
+.activity:last-child{grid-column:1/-1}
+.activity h3{font-size:14px}
+.activity .answer{font-size:13px;margin-top:12px;padding:12px;background:var(--soft);border-radius:8px}
+details{border:1px solid var(--line);border-radius:12px;background:white}
+summary{cursor:pointer;font-weight:700;padding:16px 19px}
+.details-body{padding:0 19px 20px}
+.model-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.model-grid h3{margin:10px 0}
+.model-grid p{font-size:13px}
+.formula{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;font-size:12px!important;background:var(--soft);padding:11px;border-radius:8px;line-height:1.8}
+.validation{font-size:12px;margin:0;padding:0;list-style:none}
+.validation li{padding:5px 0}
+footer{font-size:12px;color:var(--muted);padding:18px 3px}
+[hidden]{display:none!important}
+@media(max-width:1150px){
+  .workspace{grid-template-columns:280px minmax(0,1fr)}
+  .comparisons{grid-template-columns:1fr}
+  .diagram{height:330px}
+}
+@media(max-width:750px){
+  .shell{padding:16px}
+  header{gap:12px}
+  .language{min-width:100px}
+  .workspace{grid-template-columns:1fr}
+  .controls{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .controls .control-card:last-child{grid-column:1/-1}
+  .activities,.model-grid{grid-template-columns:1fr}
+  .activity:last-child{grid-column:auto}
+  .panel{padding:17px}
+}
+@media(max-width:480px){
+  header{flex-direction:column}
+  .language{align-self:flex-end}
+  .controls{grid-template-columns:1fr}
+  .controls .control-card:last-child{grid-column:auto}
+  .diagram{height:300px}
+  .stage-top{align-items:flex-start}
+  .toggles{gap:9px}
+  .readings{gap:0 10px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media print{
+  body{background:white}
+  .shell{padding:0}
+  .controls,.language,.button-row,.toggles,footer{display:none}
+  .workspace{display:block}
+  .comparisons{grid-template-columns:1fr 1fr}
+  .card{box-shadow:none}
+  .view{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div>
+    <div class="eyebrow" data-i18n="eyebrow"></div>
+    <h1 data-i18n="title"></h1>
+    <p class="subtitle" data-i18n="subtitle"></p>
+  </div>
+  <button id="language" class="language" type="button"></button>
+</header>
+
+<div class="workflow" data-i18n="workflow"></div>
+
+<main>
+<div class="workspace">
+<aside class="controls" data-aria="controls">
+  <section class="card control-card">
+    <div class="section-tag">01</div>
+    <h2 data-i18n="eyeControls"></h2>
+    <div class="field">
+      <label for="condition" class="field-label" data-i18n="condition"></label>
+      <select id="condition">
+        <option value="normal" data-i18n="normal"></option>
+        <option value="myopia" data-i18n="myopia"></option>
+        <option value="hyperopia" data-i18n="hyperopia"></option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="errorNumber" class="field-label" data-i18n="errorLabel"></label>
+      <div class="input-row">
+        <input id="errorRange" type="range" min="0" max="0" step=".25" value="0" data-aria="errorSlider">
+        <input id="errorNumber" type="number" min="0" max="0" step=".25" value="0" aria-describedby="errorNote">
+      </div>
+      <p id="errorNote" class="hint-text" data-i18n="errorNote"></p>
+    </div>
+    <div class="field">
+      <label for="accommodation" class="field-label" data-i18n="accommodationMode"></label>
+      <select id="accommodation">
+        <option value="relaxed" data-i18n="relaxed"></option>
+        <option value="manual" data-i18n="manual"></option>
+        <option value="automatic" data-i18n="automatic"></option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="aNumber" class="field-label" data-i18n="manualA"></label>
+      <div class="input-row">
+        <input id="aRange" type="range" min="0" max="4" step=".25" value="0" data-aria="aSlider">
+        <input id="aNumber" type="number" min="0" max="4" step=".25" value="0">
+      </div>
+    </div>
+    <div class="field">
+      <label for="maxNumber" class="field-label" data-i18n="maxA"></label>
+      <div class="input-row">
+        <input id="maxRange" type="range" min="0" max="8" step=".25" value="4" data-aria="maxSlider">
+        <input id="maxNumber" type="number" min="0" max="8" step=".25" value="4">
+      </div>
+      <p class="hint-text" data-i18n="accommodationNote"></p>
+    </div>
+  </section>
+
+  <section class="card control-card">
+    <div class="section-tag">02</div>
+    <h2 data-i18n="objectControls"></h2>
+    <div class="field">
+      <label for="uNumber" class="field-label" data-i18n="distanceLabel"></label>
+      <div class="input-row">
+        <input id="uRange" type="range" min="0" max="1000" step="1" value="1000" data-aria="distanceSlider">
+        <input id="uNumber" type="number" min=".10" max="6" step=".001" value="6" aria-describedby="distanceNote">
+      </div>
+      <div class="presets">
+        <button type="button" data-distance=".25" data-i18n="p25"></button>
+        <button type="button" data-distance=".5" data-i18n="p50"></button>
+        <button type="button" data-distance="1" data-i18n="p1"></button>
+        <button type="button" data-distance="6" data-i18n="p6"></button>
+        <button type="button" data-distance="infinity" data-i18n="infinity"></button>
+      </div>
+      <p id="distanceNote" class="hint-text" data-i18n="distanceNote"></p>
+      <p id="distanceState" class="hint-text"></p>
+    </div>
+  </section>
+
+  <section class="card control-card">
+    <div class="section-tag">03</div>
+    <h2 data-i18n="lensControls"></h2>
+    <div class="field">
+      <label class="check"><input id="lensEnabled" type="checkbox"><span data-i18n="addLens"></span></label>
+    </div>
+    <div class="field">
+      <label for="pcNumber" class="field-label" data-i18n="powerLabel"></label>
+      <div class="input-row">
+        <input id="pcRange" type="range" min="-12" max="12" step=".25" value="0" data-aria="powerSlider">
+        <input id="pcNumber" type="number" min="-12" max="12" step=".25" value="0">
+      </div>
+      <p id="lensInfo" class="hint-text"></p>
+      <p class="hint-text" data-i18n="lensNote"></p>
+    </div>
+    <div class="button-row">
+      <button id="hintToggle" type="button" aria-expanded="false" aria-controls="theory"></button>
+    </div>
+    <div id="theory" class="hint-box" hidden>
+      <h3 data-i18n="distantCorrection"></h3>
+      <p data-i18n="distantNote"></p>
+      <div id="distantValue" class="hint-value"></div>
+      <button id="applyDistant" type="button" data-i18n="applyTheory"></button>
+      <h3 style="margin-top:16px" data-i18n="currentCorrection"></h3>
+      <p data-i18n="currentNote"></p>
+      <div id="currentValue" class="hint-value"></div>
+      <button id="applyCurrent" type="button" data-i18n="applyTheory"></button>
+      <p id="theoryNotice" style="margin-top:10px"></p>
+    </div>
+    <div id="inputError" class="error" role="alert"></div>
+  </section>
+</aside>
+
+<section class="stage" data-aria="simulation">
+  <div class="stage-top">
+    <h2 data-i18n="comparisonTitle"></h2>
+    <div class="toggles">
+      <label class="check"><input id="showRays" type="checkbox" checked><span data-i18n="rays"></span></label>
+      <label class="check"><input id="showLabels" type="checkbox" checked><span data-i18n="labels"></span></label>
+      <label class="check"><input id="showExtensions" type="checkbox" checked><span data-i18n="extensions"></span></label>
+      <label class="check"><input id="showIntermediate" type="checkbox"><span data-i18n="intermediate"></span></label>
+    </div>
+  </div>
+  <div class="comparisons">
+    <article class="card view">
+      <div class="view-header">
+        <h3 class="view-heading" data-i18n="withoutLens"></h3>
+        <div id="statusBefore" class="status"></div>
+      </div>
+      <canvas id="canvasBefore" class="diagram" role="img"></canvas>
+      <p class="scale-note" data-i18n="scaleNote"></p>
+      <dl id="readingsBefore" class="readings"></dl>
+      <div class="retinal">
+        <h3 data-i18n="retinalTitle"></h3>
+        <div class="retinal-layout">
+          <canvas id="previewBefore" class="preview" role="img"></canvas>
+          <div><strong id="widthBefore"></strong><p class="hint-text" data-i18n="previewNote"></p></div>
+        </div>
+      </div>
+      <div id="capacityBefore" class="capacity"></div>
+    </article>
+    <article class="card view">
+      <div class="view-header">
+        <h3 class="view-heading" data-i18n="currentLens"></h3>
+        <div id="statusAfter" class="status"></div>
+      </div>
+      <canvas id="canvasAfter" class="diagram" role="img"></canvas>
+      <p class="scale-note" data-i18n="scaleNote"></p>
+      <dl id="readingsAfter" class="readings"></dl>
+      <div class="retinal">
+        <h3 data-i18n="retinalTitle"></h3>
+        <div class="retinal-layout">
+          <canvas id="previewAfter" class="preview" role="img"></canvas>
+          <div><strong id="widthAfter"></strong><p class="hint-text" data-i18n="previewNote"></p></div>
+        </div>
+      </div>
+      <div id="capacityAfter" class="capacity"></div>
+    </article>
+  </div>
+  <div class="legend">
+    <span><i class="swatch"></i><span data-i18n="physicalRays"></span></span>
+    <span><i class="swatch dash"></i><span data-i18n="geometricExtensions"></span></span>
+    <span><i class="swatch retina"></i><span data-i18n="retina"></span></span>
+  </div>
+  <div class="notice" data-i18n="toleranceNote"></div>
+  <div class="notice" data-i18n="comparisonNote"></div>
+</section>
+</div>
+
+<div class="lower">
+<section class="card panel">
+  <div class="panel-head">
+    <div><h2 data-i18n="recordsTitle"></h2><p class="hint-text" data-i18n="recordsNote"></p></div>
+    <div class="button-row" style="margin-top:0">
+      <button id="record" class="primary" type="button" data-i18n="recordButton"></button>
+      <button id="export" type="button" data-i18n="exportButton"></button>
+      <button id="clear" class="danger" type="button" data-i18n="clearButton"></button>
+      <button id="reset" type="button" data-i18n="resetButton"></button>
+    </div>
+  </div>
+  <div id="recordAnnouncement" class="small" role="status" aria-live="polite"></div>
+  <div class="table-wrap">
+    <table id="recordsTable">
+      <caption class="small" style="text-align:left;padding:10px 12px" data-i18n="recordCaption"></caption>
+      <thead id="recordHead"></thead>
+      <tbody id="recordBody"></tbody>
+    </table>
+    <div id="emptyRecords" class="empty" data-i18n="emptyRecords"></div>
+  </div>
+</section>
+
+<section class="card panel">
+  <div class="panel-head"><h2 data-i18n="activitiesTitle"></h2><p class="small" data-i18n="predictFirst"></p></div>
+  <div id="activities" class="activities"></div>
+</section>
+
+<details>
+  <summary data-i18n="modelTitle"></summary>
+  <div class="details-body">
+    <div class="model-grid">
+      <section>
+        <h3 data-i18n="modelEyeTitle"></h3>
+        <p data-i18n="modelEye"></p>
+        <p class="formula">r = 0.017 m; d = 0.012 m<br>P₀ = 1/r = 58.823529… D<br>Peye,rest = P₀ − E<br>Peye = P₀ − E + A</p>
+        <h3 data-i18n="modelVergenceTitle"></h3>
+        <p data-i18n="modelVergence"></p>
+        <p class="formula">Lin = −1/u; Lg = Lin + Pc<br>Le = Lg / (1 − d × Lg)<br>Lout = Le + Peye<br>q = 1/Lout; Δ = q − r</p>
+        <p data-i18n="modelVergenceStates"></p>
+        <h3 data-i18n="modelAccommodationTitle"></h3>
+        <p class="formula">Arequired = E − Le<br>Aauto = clamp(Arequired, 0, Amax)<br>Pc,distant = E / (1 + dE)<br>Pc,current = 1/u + (E − A)/(1 + d(E − A))</p>
+        <p data-i18n="modelAccommodation"></p>
+      </section>
+      <section>
+        <h3 data-i18n="modelRaysTitle"></h3>
+        <p class="formula">ynew = y + ℓα<br>αnew = α − Py</p>
+        <p data-i18n="modelRays"></p>
+        <p data-i18n="modelAperture"></p>
+        <h3 data-i18n="intermediateTitle"></h3>
+        <p data-i18n="intermediateExplanation"></p>
+        <p class="formula">qg = 1/(Pc − 1/u)</p>
+        <h3 data-i18n="limitationsTitle"></h3>
+        <p data-i18n="limitations"></p>
+        <p data-i18n="hyperopiaNote"></p>
+        <p data-i18n="previewLimitations"></p>
+      </section>
+    </div>
+  </div>
+</details>
+
+<details>
+  <summary id="validationTitle"></summary>
+  <div class="details-body">
+    <p class="hint-text" data-i18n="validationNote"></p>
+    <ul id="validationResults" class="validation"></ul>
+  </div>
+</details>
+</div>
+</main>
+<footer data-i18n="disclaimer"></footer>
+</div>
+
+<script>
+"use strict";
+
+/* Centralized translations: stored physics and record snapshots are language-independent. */
+const I18N = {
+en:{
+  docTitle:"Eye Optics Laboratory",
+  eyebrow:"Interactive physics · Geometrical optics",
+  title:"Eye Optics Laboratory",
+  subtitle:"Trace light, locate the focus, and separate the effects of accommodation and corrective lenses.",
+  languageButton:"繁體中文",languageAria:"Switch interface to Traditional Chinese",
+  workflow:"Select the eye condition → Change object distance → Observe image formation → Try a corrective lens → Compare the results.",
+  controls:"Optical controls",simulation:"Ray tracing and comparison",
+  eyeControls:"Eye & accommodation",condition:"Eye condition",normal:"Normal",myopia:"Myopia",hyperopia:"Hyperopia",
+  errorLabel:"Model refractive error E (D)",errorSlider:"Model refractive error slider, diopters",
+  errorNote:"E is an equivalent eye-plane model error, not total eye power or a clinical spectacle prescription. Eye geometry stays fixed.",
+  accommodationMode:"Accommodation mode",relaxed:"Relaxed",manual:"Manual",automatic:"Automatic",
+  manualA:"Manual accommodation A (D)",aSlider:"Manual accommodation slider, diopters",
+  maxA:"Accommodation capacity Amax (D)",maxSlider:"Accommodation capacity slider, diopters",
+  accommodationNote:"Accommodation adds eye power only: 0 ≤ A ≤ Amax. Automatic mode never uses negative accommodation.",
+  objectControls:"Object distance",distanceLabel:"Object distance u (m)",distanceSlider:"Logarithmic object distance slider, meters",
+  p25:"25 cm",p50:"50 cm",p1:"1 m",p6:"6 m",infinity:"Infinity",
+  distanceNote:"u is measured to the corrective-lens reference plane, even when the lens is removed. The eye is another 0.012 m farther away. Move the slider to leave infinity.",
+  infinityState:"Infinity: parallel incident rays; 1/u = 0.",
+  finiteState:"Object-to-eye distance: {value} m.",
+  lensControls:"Corrective lens",addLens:"Add corrective lens (uncheck to remove)",
+  powerLabel:"Corrective-lens optical power Pc (D)",powerSlider:"Corrective-lens optical power slider, diopters",
+  lensNote:"The lens is 12 mm in front of the eye lens. Its drawn shape is schematic, not a calculation of thickness, curvature, or refractive index.",
+  converging:"Converging lens",diverging:"Diverging lens",zeroLens:"Zero power / infinite focal length",
+  lensRemoved:"Lens removed; effective Pc = 0 D. Stored setting: {value} D.",
+  focalInfo:"{type} · Pc = {power} D · f = {focal} m.",
+  showTheory:"Theoretical correction hint",hideTheory:"Hide theoretical correction hint",
+  distantCorrection:"Distant object, relaxed eye",
+  distantNote:"This value compensates the model error for infinity with A = 0. The 12 mm separation is included.",
+  currentCorrection:"Current distance & accommodation",
+  currentNote:"This value gives retinal focus for the current object and the current view’s actual A. Applying it adds the lens. It is not a universal spectacle prescription.",
+  applyTheory:"Apply theoretical value",
+  theoryNotice:"Theoretical values retain full calculation precision; the slider is only a 0.25 D adjustment tool.",
+  theoryRange:"A required theoretical value is outside the available −12 to +12 D range and cannot be applied.",
+  theoryUnavailable:"No finite theoretical value",
+  invalid:"Enter a finite value between {min} and {max}{step}. The last valid setting is unchanged.",
+  stepQuarter:", in 0.25 D steps",
+  comparisonTitle:"Follow the light",
+  rays:"Rays",labels:"Labels",extensions:"Extensions",intermediate:"Intermediate image",
+  withoutLens:"Without corrective lens",currentLens:"Current corrective lens",
+  sharp:"Sharp retinal focus",front:"Focus in front of retina",behind:"Focus behind retina",
+  parallel:"Parallel emerging rays",virtual:"No real image behind eye",
+  planeFocus:"Intersection at eye-lens plane",
+  scaleNote:"Broken horizontal scale: object region in meters; eye region magnified in millimeters. Regions are not at the same scale.",
+  physicalRays:"Physical rays (solid)",geometricExtensions:"Geometrical extensions (dashed)",retina:"Retina",
+  toleranceNote:"Teaching classification: “sharp” means |q − 17.000 mm| ≤ 0.050 mm. This disclosed geometrical tolerance is not a clinical visual-acuity standard.",
+  comparisonNote:"Both views use the same object, E, mode, and capacity. Manual A is identical; automatic A is calculated separately. Solid rays stop at the retina. Dashed rays behind it are hypothetical extensions, not light passing through the eye.",
+  retinalTitle:"Defocus illustration",bundleWidth:"Retinal bundle width: {value} mm",
+  previewNote:"An inverted retinal geometrical image with defocus-dependent spreading. Light reaches the retina even when its focus is elsewhere.",
+  capacityOkay:"Required A: {required} D. Actual A: {actual} D. Requirement is within the 0–{max} D capacity.",
+  capacityNegative:"Required A: {required} D. Actual A: {actual} D. A negative requirement cannot be supplied by accommodation.",
+  capacityExceeded:"Required A: {required} D. Actual A: {actual} D. Requirement exceeds Amax = {max} D.",
+  capacitySingular:"Required A is undefined: the incoming bundle intersects at the eye-lens plane. No finite accommodation can place its common focus on the retina.",
+  readingE:"Eye condition / E (D)",readingU:"Object distance u (m)",readingPc:"Effective Pc (D)",
+  readingA:"Mode / actual A (D)",readingPower:"Total eye power Peye (D)",
+  readingQ:"Image distance q (mm)",readingDelta:"Defocus Δ = q − r (mm)",
+  readingIntermediate:"Lens-only image qg (m)",
+  noFiniteImage:"No finite image distance",virtualDistance:"{value} (virtual)",eyePlaneDistance:"0 (eye-lens plane)",
+  longDistance:"{value} mm; outside view",notApplicable:"Not applicable",
+  intermediateReal:"{value} m (real, lens-only)",
+  intermediateVirtual:"{value} m (virtual, lens-only)",
+  object:"Object",eyeLens:"Eye lens",reference:"Reference plane",corrective:"Corrective lens",
+  axis:"Optical axis",focus:"Eye image",lensImage:"Lens-only image",
+  objectRegion:"Object region · m",eyeRegion:"Eye region · mm",
+  parallelIncident:"Parallel incident rays",offscreenRight:"Focus → {value} mm",offscreenLeft:"← Image {value} mm",
+  offscreenVertical:"Image outside vertical view: q = {value} mm",
+  canvasDescription:"{view}. {condition}; E {E} D; object {u}; corrective lens {Pc} D; accommodation {A} D. {status}. Image distance {q}. Retinal bundle width {width} mm. Object and eye regions have different horizontal scales.",
+  previewDescription:"Defocus illustration, not visual acuity. Retinal bundle width {width} mm; retinal image tip at {center} mm relative to the optical axis.",
+  recordsTitle:"Experiment records",recordsNote:"Record the current-lens view. Snapshots do not change when you adjust controls.",
+  recordButton:"Record experiment",exportButton:"Export CSV",clearButton:"Clear records",resetButton:"Reset laboratory",
+  recordCaption:"Current-lens view snapshots; units are included in headers.",
+  emptyRecords:"No records yet. Make a prediction, adjust one variable, and record the result.",
+  clearConfirm:"Clear all experiment records? This cannot be undone.",
+  resetConfirm:"Reset to a normal eye, infinity, no lens, relaxed accommodation, and Amax = 4 D, and delete all records? The language will be preserved.",
+  delete:"Delete",deleteAria:"Delete experiment record {id}",
+  recorded:"Experiment {id} recorded.",deleted:"Experiment {id} deleted.",cleared:"All records cleared.",resetDone:"Laboratory reset; all records cleared.",
+  csvFilename:"eye-optics-records",
+  hId:"Record",hTime:"Time",hCondition:"Eye condition",hE:"E (D)",hU:"u (m)",
+  hLens:"Lens present",hPc:"Effective Pc (D)",hMode:"Accommodation mode",hA:"A (D)",
+  hMax:"Amax (D)",hPower:"Peye (D)",hQ:"q (mm)",hDelta:"Δ (mm)",hWidth:"Retinal bundle width (mm)",hStatus:"Classification",hAction:"Action",
+  yes:"Yes",no:"No",
+  activitiesTitle:"Predict → test → explain",predictFirst:"Hints and explanations start hidden.",
+  showHint:"Show hint",hideHint:"Hide hint",showExplanation:"Show explanation",hideExplanation:"Hide explanation",
+  q1:"1. How does moving an object closer change image formation in a myopic eye?",
+  hint1:"Keep the eye relaxed and remove the corrective lens. Watch q as you reduce u.",
+  answer1:"A closer object supplies more divergent light, reducing the outgoing vergence and moving a real focus farther from the eye lens. In a relaxed myopic eye, a particular finite distance can put the focus on the retina. Closer still, the focus can move behind the retina and require accommodation. Myopia does not make every near distance clear.",
+  q2:"2. How does a diverging lens change the light entering the eye?",
+  hint2:"Compare ray slopes immediately before and after a negative-power lens.",
+  answer2:"A negative-power diverging lens makes the incident vergence more negative. For a distant object it produces a virtual lens-only image on the object side. The eye then receives light as if it came from that nearer point. An appropriate negative power can move a myopic eye’s final focus from in front of the retina onto it. The lens-only virtual image is not the final eye image.",
+  q3:"3. Why can a hyperopic eye sometimes see distant objects clearly?",
+  hint3:"Select hyperopia and automatic accommodation. Compare required A with Amax.",
+  answer3:"A relaxed hyperopic eye has insufficient power for distant retinal focus in this model. Accommodation can add the missing power: without spectacles at infinity, required A equals E. If capacity is sufficient, the focus reaches the retina. A nearer object generally needs still more accommodation. Hyperopia and reduced accommodation capacity are different concepts; hyperopia is not the same as presbyopia.",
+  q4:"4. Does a stronger lens always produce clearer vision?",
+  hint4:"Fix the eye and object. Try powers below, at, and beyond a theoretical correction.",
+  answer4:"No. Sharpness depends on the combined, separated optical system and available accommodation, not on power magnitude alone. Under-correction, appropriate correction, and over-correction move the focus to different positions. For a relaxed myopic eye viewing infinity, too little negative correction leaves focus in front; an appropriate value puts it on the retina; too much negative correction moves it behind. Accommodation may partly compensate some errors, but cannot become negative.",
+  q5:"5. How does the same lens behave at different object distances?",
+  hint5:"Keep Pc fixed. Change u first with relaxed accommodation, then with automatic accommodation.",
+  answer5:"The incoming vergence changes with object distance, even though the lens adds the same Pc. Propagation through the 12 mm gap changes the vergence again before the eye. Consequently, the final image distance and required accommodation change. A lens that gives sharp focus for one object distance and one A is not automatically suitable for all distances.",
+  modelTitle:"The model, equations & limitations",
+  modelEyeTitle:"A fixed-geometry equivalent eye",
+  modelEye:"The cornea and crystalline lens are combined into one paraxial thin lens. The retina remains 17 mm behind it. Negative E represents myopia, zero E a normal eye, and positive E hyperopia. Refractive power changes; axial length does not.",
+  modelVergenceTitle:"Separated lenses and image distance",
+  modelVergence:"Light travels left to right. The object-to-reference-plane distance is u; the object-to-eye distance is u + d. At infinity, 1/u = 0. The corrective lens is not simply added to the eye power: its separation is explicitly included.",
+  modelVergenceStates:"Positive Lout gives a real image behind the eye lens. Zero Lout gives parallel emerging rays; negative Lout gives a virtual image. Ray matrices remain usable when the vergence representation is singular. A common intersection exactly at the eye-lens plane is reported separately, not as a retinal focus.",
+  modelAccommodationTitle:"Accommodation and theoretical corrections",
+  modelAccommodation:"Accommodation changes the equivalent eye power; spectacles change the light before it enters the eye. The current-distance formula uses the actual A of the current-lens view. An automatic mode recomputes its bounded A after any change; it is not an unlimited autofocus mechanism.",
+  modelRaysTitle:"Calculated rays, not target-based drawing",
+  modelRays:"Three rays sample the tip bundle. A finite object has an illustrative height of 4 mm; an infinite object has an illustrative angular height of 0.012 rad. These define the off-axis image tip and allow inversion to be seen. Ray heights and paraxial slopes are propagated and refracted in meters. Dashed backward extensions indicate virtual images; beyond-retina extensions are hypothetical.",
+  modelAperture:"The fixed illustrative entrance aperture is 2.000 mm wide at the corrective-lens reference plane, including when the lens is absent. The same aperture is used in both views. Retinal bundle width is the full geometrical tip-bundle width from that aperture. No additional anatomical pupil clipping is modeled.",
+  intermediateTitle:"Two different images",
+  intermediateExplanation:"qg is the image distance of the corrective lens alone, measured from its plane. A negative qg is a virtual intermediate image; a positive qg is its lens-only real-image location. If the eye intercepts the bundle first, that lens-only real image does not physically form: its location is only a hypothetical continuation. The final eye-image distance q is measured from the eye lens. These reference planes and images must not be confused.",
+  limitationsTitle:"What this does not model",
+  limitations:"This first-order model excludes aberrations, diffraction, chromatic effects, retinal sampling, neural processing, and the complex refraction of real eye tissues. Eye and lens outlines are schematic. The drawing has a broken horizontal scale; resizing changes display geometry, never optical calculations.",
+  hyperopiaNote:"Hyperopia need not blur every distance if accommodation is sufficient. Myopia does not guarantee clear vision at every near distance. Amax illustrates accommodation capacity but is not an age model or a diagnosis of presbyopia.",
+  previewLimitations:"The defocus illustration uses calculated retinal bundle width to set an illustrative two-dimensional blur. It is not an exact point-spread function, a prediction of perceived vision, visual acuity, or an eye-chart score. The retinal image is shown inverted; no upright perception preview is included.",
+  validationTitle:"Numerical model self-checks: {passed}/{total} passed",
+  validationNote:"These checks execute locally on the equations and ray intersections. They are not a claim of automated browser, clinical, or accessibility certification.",
+  pass:"PASS",fail:"FAIL",
+  testNormal:"Normal eye at infinity: focus at 17 mm.",
+  testMyopia:"−2 D relaxed myopia at infinity: focus in front.",
+  testHyperopia:"+2 D relaxed hyperopia at infinity: focus behind.",
+  testCorrection:"Separated-lens theoretical corrections restore retinal focus.",
+  testNear:"Normal finite-distance requirement equals 1/(u + d).",
+  testAuto:"Automatic accommodation is bounded; sufficient hyperopic capacity can focus.",
+  testNegative:"Distant myopia never uses negative accommodation.",
+  testUnderOver:"Under-, appropriate, and over-correction give distinct positions.",
+  testRays:"Calculated ray intersections agree with q.",
+  testParallel:"Parallel output has no fabricated finite image.",
+  testVirtual:"Divergent output has a virtual image, not a real rear focus.",
+  testSingular:"A singular incoming vergence is handled by ray coefficients.",
+  disclaimer:"Simplified physics teaching model only. Not an eye examination, diagnostic tool, or source of personal prescription advice. Records remain in this page’s memory unless exported; reloading closes the experiment."
+},
+zh:{
+  docTitle:"眼睛光學實驗室",
+  eyebrow:"互動物理 · 幾何光學",
+  title:"眼睛光學實驗室",
+  subtitle:"追蹤光線、找出焦點，分辨眼睛調節與矯正鏡片的不同作用。",
+  languageButton:"English",languageAria:"切換介面至英文",
+  workflow:"選擇眼睛狀況 → 改變物距 → 觀察成像 → 嘗試矯正鏡片 → 比較結果。",
+  controls:"光學控制",simulation:"光線追蹤與比較",
+  eyeControls:"眼睛與調節",condition:"眼睛狀況",normal:"正常",myopia:"近視",hyperopia:"遠視",
+  errorLabel:"模型屈光誤差 E（D）",errorSlider:"模型屈光誤差滑桿，單位為 D",
+  errorNote:"E 是等效眼透鏡平面的模型屈光誤差，並非眼睛總光焦度或臨床眼鏡處方。眼睛幾何尺寸保持不變。",
+  accommodationMode:"調節模式",relaxed:"放鬆",manual:"手動",automatic:"自動",
+  manualA:"手動調節 A（D）",aSlider:"手動調節滑桿，單位為 D",
+  maxA:"調節能力上限 Amax（D）",maxSlider:"調節能力上限滑桿，單位為 D",
+  accommodationNote:"調節只能增加眼睛光焦度：0 ≤ A ≤ Amax。自動模式不會使用負調節。",
+  objectControls:"物距",distanceLabel:"物距 u（m）",distanceSlider:"對數物距滑桿，單位為米",
+  p25:"25 cm",p50:"50 cm",p1:"1 m",p6:"6 m",infinity:"無限遠",
+  distanceNote:"u 由物體量至矯正鏡片參考平面；移除鏡片後仍使用同一平面。眼透鏡位於該平面後方 0.012 m。移動滑桿即可離開無限遠狀態。",
+  infinityState:"無限遠：入射光線平行；1/u = 0。",
+  finiteState:"物體至眼透鏡的距離：{value} m。",
+  lensControls:"矯正鏡片",addLens:"加入矯正鏡片（取消勾選以移除）",
+  powerLabel:"矯正鏡片光焦度 Pc（D）",powerSlider:"矯正鏡片光焦度滑桿，單位為 D",
+  lensNote:"鏡片位於眼透鏡前方 12 mm。圖示形狀僅為示意，並非根據厚度、曲率或折射率計算。",
+  converging:"會聚鏡",diverging:"發散鏡",zeroLens:"零光焦度／無限焦距",
+  lensRemoved:"已移除鏡片；有效 Pc = 0 D。保留設定：{value} D。",
+  focalInfo:"{type} · Pc = {power} D · f = {focal} m。",
+  showTheory:"理論矯正提示",hideTheory:"隱藏理論矯正提示",
+  distantCorrection:"無限遠物體、眼睛放鬆",
+  distantNote:"此值補償無限遠、A = 0 時的模型誤差，已計及 12 mm 的鏡片間距。",
+  currentCorrection:"目前物距與調節",
+  currentNote:"此值使目前物體在目前鏡片視圖的實際 A 下聚焦於視網膜。套用時會加入鏡片。它並非適用所有距離的眼鏡處方。",
+  applyTheory:"套用理論值",
+  theoryNotice:"理論值保留完整計算精度；滑桿只用作每次 0.25 D 的調整。",
+  theoryRange:"所需理論值超出 −12 至 +12 D 的可用範圍，無法套用。",
+  theoryUnavailable:"不存在有限的理論值",
+  invalid:"請輸入 {min} 至 {max} 之間的有限數值{step}。上一個有效設定保持不變。",
+  stepQuarter:"，並以 0.25 D 為步距",
+  comparisonTitle:"追蹤光線",
+  rays:"光線",labels:"標籤",extensions:"延長線",intermediate:"中間像",
+  withoutLens:"沒有矯正鏡片",currentLens:"目前矯正鏡片",
+  sharp:"清晰聚焦於視網膜",front:"焦點在視網膜前方",behind:"焦點在視網膜後方",
+  parallel:"出射光線平行",virtual:"眼睛後方沒有實像",
+  planeFocus:"交點位於眼透鏡平面",
+  scaleNote:"橫軸採用斷軸比例：物體區以米表示；眼睛區以毫米放大顯示。兩區並非同一比例。",
+  physicalRays:"實際光線（實線）",geometricExtensions:"幾何延長線（虛線）",retina:"視網膜",
+  toleranceNote:"教學分類：「清晰」表示 |q − 17.000 mm| ≤ 0.050 mm。此明示的幾何容差並非臨床視力標準。",
+  comparisonNote:"兩個視圖使用相同的物體、E、模式及調節能力。手動 A 相同；自動 A 分別計算。實線止於視網膜；其後的虛線只是假想延長線，並非穿過眼睛的光。",
+  retinalTitle:"離焦示意",bundleWidth:"視網膜光束寬度：{value} mm",
+  previewNote:"顯示倒立的視網膜幾何像及隨離焦而變的擴散。即使焦點在別處，光仍會到達視網膜。",
+  capacityOkay:"所需 A：{required} D。實際 A：{actual} D。所需值在 0–{max} D 能力範圍內。",
+  capacityNegative:"所需 A：{required} D。實際 A：{actual} D。調節不能提供所需的負值。",
+  capacityExceeded:"所需 A：{required} D。實際 A：{actual} D。所需值超過 Amax = {max} D。",
+  capacitySingular:"所需 A 無法定義：入射光束交於眼透鏡平面。任何有限的調節都不能把共同焦點移至視網膜。",
+  readingE:"眼睛狀況／E（D）",readingU:"物距 u（m）",readingPc:"有效 Pc（D）",
+  readingA:"模式／實際 A（D）",readingPower:"眼睛總光焦度 Peye（D）",
+  readingQ:"像距 q（mm）",readingDelta:"離焦位移 Δ = q − r（mm）",
+  readingIntermediate:"僅鏡片成像 qg（m）",
+  noFiniteImage:"沒有有限像距",virtualDistance:"{value}（虛像）",eyePlaneDistance:"0（眼透鏡平面）",
+  longDistance:"{value} mm；位於視圖外",notApplicable:"不適用",
+  intermediateReal:"{value} m（僅鏡片的實像）",
+  intermediateVirtual:"{value} m（僅鏡片的虛像）",
+  object:"物體",eyeLens:"眼透鏡",reference:"參考平面",corrective:"矯正鏡片",
+  axis:"主光軸",focus:"眼睛所成的像",lensImage:"僅鏡片所成的像",
+  objectRegion:"物體區 · m",eyeRegion:"眼睛區 · mm",
+  parallelIncident:"平行入射光線",offscreenRight:"焦點 → {value} mm",offscreenLeft:"← 像 {value} mm",
+  offscreenVertical:"像超出垂直視圖：q = {value} mm",
+  canvasDescription:"{view}。{condition}；E 為 {E} D；物距 {u}；矯正鏡片 {Pc} D；調節 {A} D。{status}。像距 {q}。視網膜光束寬度 {width} mm。物體區與眼睛區的橫軸比例不同。",
+  previewDescription:"離焦示意，並非視力預測。視網膜光束寬度 {width} mm；視網膜像的頂端相對主光軸位於 {center} mm。",
+  recordsTitle:"實驗紀錄",recordsNote:"記錄目前鏡片視圖。調整控制項不會改變已儲存的快照。",
+  recordButton:"記錄實驗",exportButton:"匯出 CSV",clearButton:"清除紀錄",resetButton:"重設實驗室",
+  recordCaption:"目前鏡片視圖的快照；欄標已包含單位。",
+  emptyRecords:"尚無紀錄。先作預測，再調整一個變項，然後記錄結果。",
+  clearConfirm:"清除所有實驗紀錄？此操作無法復原。",
+  resetConfirm:"重設為正常眼、無限遠、沒有鏡片、放鬆調節及 Amax = 4 D，並刪除所有紀錄？介面語言會保留。",
+  delete:"刪除",deleteAria:"刪除第 {id} 筆實驗紀錄",
+  recorded:"已記錄第 {id} 筆實驗。",deleted:"已刪除第 {id} 筆實驗。",cleared:"已清除所有紀錄。",resetDone:"實驗室已重設，所有紀錄已清除。",
+  csvFilename:"眼睛光學實驗紀錄",
+  hId:"紀錄",hTime:"時間",hCondition:"眼睛狀況",hE:"E（D）",hU:"u（m）",
+  hLens:"有矯正鏡片",hPc:"有效 Pc（D）",hMode:"調節模式",hA:"A（D）",
+  hMax:"Amax（D）",hPower:"Peye（D）",hQ:"q（mm）",hDelta:"Δ（mm）",hWidth:"視網膜光束寬度（mm）",hStatus:"分類",hAction:"操作",
+  yes:"是",no:"否",
+  activitiesTitle:"預測 → 測試 → 解釋",predictFirst:"提示與解釋最初均隱藏。",
+  showHint:"顯示提示",hideHint:"隱藏提示",showExplanation:"顯示解釋",hideExplanation:"隱藏解釋",
+  q1:"1. 把物體移近，會如何改變近視眼的成像？",
+  hint1:"保持眼睛放鬆，移除矯正鏡片。減小 u，觀察 q。",
+  answer1:"較近的物體提供更發散的入射光，使出射會聚度減小，實焦點離眼透鏡更遠。放鬆的近視眼在某個有限物距下可聚焦於視網膜；再移近，焦點可移至視網膜後方，需要調節。近視並不代表所有近距離都清晰。",
+  q2:"2. 發散鏡如何改變進入眼睛的光？",
+  hint2:"比較光線通過負光焦度鏡片前後的斜率。",
+  answer2:"負光焦度發散鏡使入射會聚度更負。對無限遠物體而言，它在物體一側形成僅鏡片的虛像。眼睛接收的光彷彿來自那個較近的位置。適當的負光焦度可把近視眼的最終焦點由視網膜前方移至視網膜上。鏡片的中間虛像並不是眼睛形成的最終像。",
+  q3:"3. 為甚麼遠視眼有時仍能看清遠處物體？",
+  hint3:"選擇遠視及自動調節，比較所需 A 與 Amax。",
+  answer3:"本模型中，放鬆的遠視眼光焦度不足，不能把遠處物體聚焦於視網膜。調節可補充光焦度：沒有眼鏡、物體在無限遠時，所需 A 等於 E。能力足夠便可聚焦於視網膜。較近物體通常需要更多調節。遠視與調節能力降低是不同概念；遠視不等於老花。",
+  q4:"4. 光焦度更強的鏡片一定使影像更清晰嗎？",
+  hint4:"固定眼睛與物距，嘗試低於、等於及超出理論矯正值的鏡片。",
+  answer4:"不一定。清晰程度取決於有間距的整個光學系統及可用調節，而非只看光焦度大小。矯正不足、適當矯正及過度矯正會產生不同焦點。放鬆的近視眼看無限遠時，負矯正不足會令焦點留在視網膜前方；適當值使焦點落在視網膜上；負矯正過強會把焦點移到後方。調節可補償部分誤差，但不能變成負值。",
+  q5:"5. 同一鏡片在不同物距下如何成像？",
+  hint5:"固定 Pc，先在放鬆模式改變 u，再試自動模式。",
+  answer5:"即使鏡片每次增加相同的 Pc，入射會聚度仍隨物距改變。光通過 12 mm 間距時，其會聚度會再次改變。因此，最終像距與所需調節也會改變。某鏡片在一個物距及某個 A 下形成清晰像，不代表它適合所有距離。",
+  modelTitle:"模型、方程式與限制",
+  modelEyeTitle:"固定幾何尺寸的等效眼睛",
+  modelEye:"角膜與晶狀體合併成一個近軸薄透鏡。視網膜固定在其後方 17 mm。負 E 表示近視，零 E 表示正常，正 E 表示遠視。本模型改變屈光光焦度，不改變眼軸長度。",
+  modelVergenceTitle:"有間距的透鏡與像距",
+  modelVergence:"光由左至右傳播。物體至參考平面的距離是 u，至眼透鏡則是 u + d。無限遠時 1/u = 0。計算明確包含鏡片間距，並非直接把眼鏡與眼睛的光焦度相加。",
+  modelVergenceStates:"正 Lout 對應眼透鏡後方的實像；零 Lout 對應平行出射光；負 Lout 對應虛像。會聚度表示出現奇異狀態時，仍可使用光線矩陣。恰在眼透鏡平面的共同交點會另行報告，不會當作視網膜焦點。",
+  modelAccommodationTitle:"調節與理論矯正",
+  modelAccommodation:"調節改變等效眼透鏡的光焦度；眼鏡改變進入眼睛之前的光。目前物距公式使用目前鏡片視圖的實際 A。自動模式在每次改變後重新計算受限制的 A，並非無限制的自動對焦。",
+  modelRaysTitle:"依計算繪製光線，不預設焦點",
+  modelRays:"三條光線取樣物體頂端的光束。有限物體使用 4 mm 的示意高度；無限遠物體使用 0.012 rad 的示意角高度，以確定離軸像的頂端並顯示倒立。光線高度、近軸斜率及傳播均以米計算。向後虛線表示虛像；視網膜後方的延長線只是假想。",
+  modelAperture:"固定示意入射孔徑位於矯正鏡片參考平面，寬 2.000 mm；移除鏡片後亦相同。兩個視圖使用同一孔徑。視網膜光束寬度是此孔徑產生的完整頂端幾何光束寬度，不再模擬真實瞳孔的遮擋。",
+  intermediateTitle:"兩個不同的像",
+  intermediateExplanation:"qg 是僅矯正鏡片的像距，由鏡片平面量起。負 qg 表示中間虛像；正 qg 表示僅鏡片的實像位置。如果光束先被眼透鏡截取，該鏡片實像不會實際形成，其位置只代表假想延伸。眼睛的最終像距 q 則由眼透鏡量起。不能混淆這兩個參考平面及所成的像。",
+  limitationsTitle:"未包含的現象",
+  limitations:"此一階模型不包括像差、繞射、色差、視網膜取樣、神經處理，以及真實眼組織的複雜折射。眼睛與鏡片外形均為示意。圖的橫軸採用斷軸比例；調整視窗只改變顯示，不改變光學計算。",
+  hyperopiaNote:"若調節足夠，遠視不一定在所有距離都模糊。近視亦不保證所有近距離清晰。Amax 用來示意調節能力，並非年齡模型或老花診斷。",
+  previewLimitations:"離焦示意使用計算所得的視網膜光束寬度設定示意二維模糊，並非精確的點擴散函數，也不預測主觀視覺、視力或視力表分數。視網膜像以倒立顯示；沒有另加正立的知覺預覽。",
+  validationTitle:"數值模型自我檢查：{passed}/{total} 項通過",
+  validationNote:"這些檢查在本機執行，驗證方程式及光線交點，並不代表已通過自動瀏覽器測試、臨床驗證或無障礙認證。",
+  pass:"通過",fail:"未通過",
+  testNormal:"正常眼看無限遠：焦點位於 17 mm。",
+  testMyopia:"−2 D 放鬆近視眼看無限遠：焦點在前方。",
+  testHyperopia:"+2 D 放鬆遠視眼看無限遠：焦點在後方。",
+  testCorrection:"包含鏡片間距的理論矯正使焦點回到視網膜。",
+  testNear:"正常眼有限物距所需調節等於 1/(u + d)。",
+  testAuto:"自動調節受能力限制；遠視在能力足夠時可聚焦。",
+  testNegative:"近視眼看無限遠不會使用負調節。",
+  testUnderOver:"矯正不足、適當及過度矯正產生不同位置。",
+  testRays:"計算光線的交點與 q 一致。",
+  testParallel:"平行出射光不會產生虛構的有限像距。",
+  testVirtual:"發散出射光產生虛像，而非後方實焦點。",
+  testSingular:"入射會聚度奇異時仍以光線係數處理。",
+  disclaimer:"僅供簡化物理教學。不是眼睛檢查、診斷工具或個人處方建議。除非匯出，紀錄只保留在本頁記憶體中；重新載入會結束本次實驗。"
+}
+};
+
+const C = Object.freeze({
+  r:0.017,d:0.012,P0:1/0.017,
+  apertureRadius:0.001,objectHeight:0.004,angularHeight:0.012,
+  sharpTolerance:0.00005,coefficientTolerance:1e-10,singularTolerance:1e-12
+});
+const defaults = () => ({
+  condition:"normal",E:0,u:6,infinity:true,lens:false,Pc:0,
+  mode:"relaxed",manualA:0,Amax:4,
+  rays:true,labels:true,extensions:true,intermediate:false,theory:false
+});
+const app = {
+  lang:"en",physics:defaults(),records:[],nextRecord:1,error:null,announcement:null,
+  activities:Array.from({length:5},()=>({hint:false,explanation:false}))
+};
+const $ = id => document.getElementById(id);
+const clamp = (x,a,b) => Math.min(b,Math.max(a,x));
+const t = (key,args={}) => {
+  const value = I18N[app.lang][key];
+  return value.replace(/\{(\w+)\}/g,(_,name)=>String(args[name]??""));
+};
+function number(x,digits=3,signed=false){
+  if(!Number.isFinite(x)) return t("notApplicable");
+  const clean = Math.abs(x)<0.5*Math.pow(10,-digits)?0:x;
+  const text = Math.abs(clean)>=1e7 ? clean.toExponential(4) : clean.toFixed(digits);
+  return signed && clean>0 ? "+"+text : text;
+}
+function precise(x){
+  return Number.isFinite(x)?number(x,8,true):t("theoryUnavailable");
+}
+function uText(p){return p.infinity?t("infinity"):number(p.u,3)+" m"}
+
+/*
+ * A wave family is parameterized by height h at the reference plane.
+ * At the eye: y = B*h+c; after refraction: alpha = D*h+e.
+ * This remains finite when Le is singular, without moving a target focus.
+ */
+function opticalModel(p,effectivePc){
+  const k = p.infinity?0:1/p.u;
+  const sourceSlope = p.infinity?-C.angularHeight:-C.objectHeight*k;
+  const incomingSlope = k-effectivePc;
+  const B = 1+C.d*incomingSlope;
+  const c = C.d*sourceSlope;
+  const singular = Math.abs(B)<C.singularTolerance;
+  const Le = singular?null:-incomingSlope/B;
+  const requiredA = singular?null:p.E-Le;
+  let A = 0;
+  if(p.mode==="manual") A=clamp(p.manualA,0,p.Amax);
+  if(p.mode==="automatic" && requiredA!==null) A=clamp(requiredA,0,p.Amax);
+  const Peye = C.P0-p.E+A;
+  const D = incomingSlope-Peye*B;
+  const e = sourceSlope-Peye*c;
+  const parallel = Math.abs(D)<C.coefficientTolerance;
+  const q = parallel?null:-B/D;
+  const delta = q!==null && q>0 ? q-C.r : null;
+  let status;
+  if(parallel) status="parallel";
+  else if(Math.abs(q)<C.singularTolerance) status="planeFocus";
+  else if(q<0) status="virtual";
+  else if(Math.abs(delta)<=C.sharpTolerance) status="sharp";
+  else status=q<C.r?"front":"behind";
+  const retinalCenter = c+C.r*e;
+  const retinalWidth = 2*C.apertureRadius*Math.abs(B+C.r*D);
+  const Lg=effectivePc-k;
+  const qg=Math.abs(Lg)<C.coefficientTolerance?null:1/Lg;
+  return {
+    Pc:effectivePc,k,sourceSlope,incomingSlope,B,c,D,e,Le,requiredA,A,Peye,
+    q,delta,status,retinalCenter,retinalWidth,qg,singular,parallel
+  };
+}
+function traceRay(h,m){
+  const a0=m.k*h+m.sourceSlope;
+  const ag=a0-m.Pc*h;
+  const ye=h+C.d*ag;
+  const ae=ag-m.Peye*ye;
+  return {h,a0,ag,ye,ae,yr:ye+C.r*ae};
+}
+function currentModels(){
+  const p=app.physics;
+  return {before:opticalModel(p,0),after:opticalModel(p,p.lens?p.Pc:0)};
+}
+function theoretical(p,m){
+  const remoteDen=1+C.d*p.E;
+  const target=C.P0-m.Peye;
+  const currentDen=1+C.d*target;
+  return {
+    distant:Math.abs(remoteDen)<C.singularTolerance?null:p.E/remoteDen,
+    current:Math.abs(currentDen)<C.singularTolerance?null:(p.infinity?0:1/p.u)+target/currentDen
+  };
+}
+function qText(m){
+  if(m.q===null) return t("noFiniteImage");
+  if(m.status==="planeFocus") return t("eyePlaneDistance");
+  const v=number(m.q*1000,3);
+  if(m.q<0) return t("virtualDistance",{value:v});
+  if(Math.abs(m.q)>1) return t("longDistance",{value:number(m.q*1000,3)});
+  return v;
+}
+function lensInfo(){
+  const p=app.physics;
+  if(!p.lens) return t("lensRemoved",{value:number(p.Pc,6,true)});
+  if(Math.abs(p.Pc)<1e-12) return t("zeroLens");
+  return t("focalInfo",{
+    type:t(p.Pc>0?"converging":"diverging"),power:number(p.Pc,6,true),focal:number(1/p.Pc,5,true)
+  });
+}
+function intermediateText(m,lensPresent){
+  if(!lensPresent) return t("notApplicable");
+  if(m.qg===null) return t("noFiniteImage");
+  return t(m.qg>0?"intermediateReal":"intermediateVirtual",{value:number(m.qg,5,true)});
+}
+
+/* Language rendering never mutates optical state. */
+function renderTranslations(){
+  document.documentElement.lang=app.lang==="en"?"en":"zh-Hant";
+  document.title=t("docTitle");
+  document.querySelectorAll("[data-i18n]").forEach(el=>el.textContent=t(el.dataset.i18n));
+  document.querySelectorAll("[data-aria]").forEach(el=>el.setAttribute("aria-label",t(el.dataset.aria)));
+  $("language").textContent=t("languageButton");
+  $("language").setAttribute("aria-label",t("languageAria"));
+}
+function syncControls(){
+  const p=app.physics;
+  $("condition").value=p.condition;
+  const bounds=p.condition==="normal"?[0,0]:p.condition==="myopia"?[-8,-.25]:[.25,8];
+  for(const id of ["errorRange","errorNumber"]){
+    $(id).min=bounds[0];$(id).max=bounds[1];$(id).value=p.E;
+    $(id).disabled=p.condition==="normal";
+  }
+  $("accommodation").value=p.mode;
+  for(const id of ["aRange","aNumber"]){
+    $(id).max=p.Amax;$(id).value=p.manualA;$(id).disabled=p.mode!=="manual";
+  }
+  $("maxRange").value=p.Amax;$("maxNumber").value=p.Amax;
+  $("uRange").value=Math.round(Math.log(p.u/.1)/Math.log(60)*1000);
+  $("uNumber").value=p.u.toFixed(3);
+  $("uNumber").disabled=p.infinity;
+  document.querySelectorAll("[data-distance]").forEach(button=>{
+    const v=button.dataset.distance;
+    const active=v==="infinity"?p.infinity:!p.infinity && Math.abs(p.u-Number(v))<1e-8;
+    button.setAttribute("aria-pressed",String(active));
+  });
+  $("distanceState").textContent=p.infinity?t("infinityState"):t("finiteState",{value:number(p.u+C.d,3)});
+  $("lensEnabled").checked=p.lens;
+  $("pcRange").value=p.Pc;
+  // A theoretical value may be off the slider grid; its exact state is retained.
+  $("pcNumber").value=Number(p.Pc.toFixed(8));
+  $("lensInfo").textContent=lensInfo();
+  for(const [id,key] of [["showRays","rays"],["showLabels","labels"],["showExtensions","extensions"],["showIntermediate","intermediate"]]){
+    $(id).checked=p[key];
+  }
+  $("hintToggle").textContent=t(p.theory?"hideTheory":"showTheory");
+  $("hintToggle").setAttribute("aria-expanded",String(p.theory));
+  $("theory").hidden=!p.theory;
+  $("inputError").textContent=app.error?t(app.error.key,app.error.args):"";
+}
+function renderTheory(m){
+  const values=theoretical(app.physics,m);
+  for(const [name,output,button] of [
+    ["distant","distantValue","applyDistant"],["current","currentValue","applyCurrent"]
+  ]){
+    const v=values[name];
+    $(output).textContent=precise(v)+(v===null?"":" D");
+    $(button).disabled=v===null || !Number.isFinite(v) || v<-12 || v>12;
+  }
+  const out=Object.values(values).some(v=>v===null || !Number.isFinite(v) || Math.abs(v)>12);
+  $("theoryNotice").textContent=t(out?"theoryRange":"theoryNotice");
+}
+function renderReadings(suffix,m,lensPresent){
+  const p=app.physics;
+  const statusEl=$("status"+suffix);
+  statusEl.textContent=t(m.status);
+  statusEl.className="status "+(["sharp","front","behind"].includes(m.status)?m.status:"none");
+  const entries=[
+    ["readingE",t(p.condition)+" / "+number(p.E,2,true)],
+    ["readingU",p.infinity?t("infinity"):number(p.u,3)],
+    ["readingPc",number(m.Pc,6,true)],
+    ["readingA",t(p.mode)+" / "+number(m.A,3)],
+    ["readingPower",number(m.Peye,5)],
+    ["readingQ",qText(m)],
+    ["readingDelta",m.delta===null?t("notApplicable"):number(m.delta*1000,3,true)]
+  ];
+  if(p.intermediate) entries.push(["readingIntermediate",intermediateText(m,lensPresent)]);
+  const parent=$("readings"+suffix);
+  parent.replaceChildren();
+  entries.forEach(([key,value])=>{
+    const div=document.createElement("div");div.className="reading";
+    const dt=document.createElement("dt");dt.textContent=t(key);
+    const dd=document.createElement("dd");dd.textContent=value;
+    div.append(dt,dd);parent.append(div);
+  });
+  $("width"+suffix).textContent=t("bundleWidth",{value:number(m.retinalWidth*1000,4)});
+  let capacityKey="capacityOkay";
+  if(m.requiredA===null) capacityKey="capacitySingular";
+  else if(m.requiredA<-1e-9) capacityKey="capacityNegative";
+  else if(m.requiredA>p.Amax+1e-9) capacityKey="capacityExceeded";
+  $("capacity"+suffix).textContent=t(capacityKey,{
+    required:number(m.requiredA,4,true),actual:number(m.A,4),max:number(p.Amax,2)
+  });
+}
+
+/* Canvas is responsive and DPR-aware; all physical calculations stay in meters. */
+function canvasContext(canvas){
+  const rect=canvas.getBoundingClientRect();
+  const w=Math.max(1,rect.width),h=Math.max(1,rect.height),dpr=window.devicePixelRatio||1;
+  const bw=Math.round(w*dpr),bh=Math.round(h*dpr);
+  if(canvas.width!==bw || canvas.height!==bh){canvas.width=bw;canvas.height=bh}
+  const ctx=canvas.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  return {ctx,w,h};
+}
+function line(ctx,x1,y1,x2,y2,color,width=1.5,dashed=false){
+  if(![x1,y1,x2,y2].every(Number.isFinite)) return;
+  ctx.save();ctx.strokeStyle=color;ctx.lineWidth=width;
+  ctx.setLineDash(dashed?[5,4]:[]);
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();
+}
+function arrow(ctx,x,base,tip,color,width=2){
+  line(ctx,x,base,x,tip,color,width);
+  const dir=tip<base?1:-1;
+  ctx.save();ctx.fillStyle=color;
+  ctx.beginPath();ctx.moveTo(x,tip);ctx.lineTo(x-4,tip+dir*7);ctx.lineTo(x+4,tip+dir*7);ctx.closePath();ctx.fill();ctx.restore();
+}
+function label(ctx,text,x,y,align="center",color="#546b7b",maxWidth){
+  ctx.save();ctx.font="11px system-ui,sans-serif";ctx.fillStyle=color;ctx.textAlign=align;
+  if(maxWidth && ctx.measureText(text).width>maxWidth){
+    ctx.font="10px system-ui,sans-serif";
+  }
+  ctx.fillText(text,x,y);ctx.restore();
+}
+function wrapCanvasText(ctx,text,x,y,maxWidth,lineHeight=15){
+  ctx.save();ctx.font="11px system-ui,sans-serif";ctx.fillStyle="#546b7b";ctx.textAlign="left";
+  const tokens=app.lang==="zh"?Array.from(text):text.split(" ");
+  let current="",row=0;
+  tokens.forEach(token=>{
+    const next=current+(app.lang==="zh"?"":current?" ":"")+token;
+    if(ctx.measureText(next).width>maxWidth && current){
+      ctx.fillText(current,x,y+row*lineHeight);row++;current=token;
+    }else current=next;
+  });
+  if(current)ctx.fillText(current,x,y+row*lineHeight);
+  ctx.restore();
+}
+function drawSpectacle(ctx,x,y,halfHeight,power,enabled){
+  if(!enabled){
+    line(ctx,x,y-halfHeight,x,y+halfHeight,"#a3b4be",1,true);
+    return;
+  }
+  ctx.save();ctx.strokeStyle="#087e82";ctx.fillStyle="#d5eeed";ctx.lineWidth=1.5;
+  const b=5+Math.min(12,Math.abs(power))*0.45;
+  ctx.beginPath();
+  if(Math.abs(power)<1e-12){
+    ctx.rect(x-2,y-halfHeight,4,halfHeight*2);
+  }else if(power>0){
+    ctx.moveTo(x,y-halfHeight);
+    ctx.quadraticCurveTo(x+b*2,y,x,y+halfHeight);
+    ctx.quadraticCurveTo(x-b*2,y,x,y-halfHeight);
+  }else{
+    ctx.moveTo(x-b,y-halfHeight);ctx.lineTo(x+b,y-halfHeight);
+    ctx.quadraticCurveTo(x+1,y,x+b,y+halfHeight);ctx.lineTo(x-b,y+halfHeight);
+    ctx.quadraticCurveTo(x-1,y,x-b,y-halfHeight);
+  }
+  ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+}
+function drawDiagram(canvas,m,lensPresent,viewKey){
+  const {ctx,w,h}=canvasContext(canvas),p=app.physics;
+  const S=w*.33/.027;
+  const xe=w*.62,xg=xe-C.d*S,xr=xe+C.r*S;
+  const xo=25,axis=h*.50;
+  const Y=v=>axis-v*S;
+  const X=l=>xe+l*S;
+  const left=12,right=w-12,top=51,bottom=h-54;
+  const maxForward=(right-xe)/S,minBackward=(left-xe)/S;
+  const colors=["#087e82","#cd7a29","#7653ad"];
+  canvas.setAttribute("aria-label",t("canvasDescription",{
+    view:t(viewKey),condition:t(p.condition),E:number(p.E,2,true),u:uText(p),
+    Pc:number(m.Pc,6,true),A:number(m.A,4),status:t(m.status),
+    q:qText(m),width:number(m.retinalWidth*1000,4)
+  }));
+
+  // Schematic eye outline, with a physically fixed equivalent lens and retinal plane.
+  ctx.save();ctx.fillStyle="#eaf2f6";ctx.strokeStyle="#b9ccd7";ctx.lineWidth=1.3;
+  ctx.beginPath();
+  ctx.moveTo(xe-.003*S,axis);
+  ctx.bezierCurveTo(xe-.003*S,axis-.010*S,xr+.004*S,axis-.010*S,xr+.004*S,axis);
+  ctx.bezierCurveTo(xr+.004*S,axis+.010*S,xe-.003*S,axis+.010*S,xe-.003*S,axis);
+  ctx.fill();ctx.stroke();ctx.restore();
+  line(ctx,left,axis,right,axis,"#a4b6c0",1,true);
+  drawSpectacle(ctx,xg,axis,.007*S,m.Pc,lensPresent);
+  ctx.save();ctx.fillStyle="#d4e4f0";ctx.strokeStyle="#52748d";ctx.lineWidth=1.4;
+  ctx.beginPath();ctx.ellipse(xe,axis,4,.006*S,0,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+  line(ctx,xr,Y(.006),xr,Y(-.006),"#bc641b",3);
+  arrow(ctx,xo,axis,Y(C.objectHeight),"#123e55",2.5);
+
+  ctx.save();
+  ctx.beginPath();ctx.rect(left,top,right-left,bottom-top);ctx.clip();
+  const rayHeights=[-C.apertureRadius,0,C.apertureRadius];
+  if(p.rays){
+    rayHeights.forEach((height,index)=>{
+      const ray=traceRay(height,m),color=colors[index];
+      // The object region compresses only the horizontal distance.
+      const startY=p.infinity?Y(height-ray.a0*.04):Y(C.objectHeight);
+      line(ctx,xo,startY,xg,Y(height),color,1.6);
+      line(ctx,xg,Y(height),xe,Y(ray.ye),color,1.6);
+      line(ctx,xe,Y(ray.ye),xr,Y(ray.yr),color,1.6);
+      if(p.extensions && m.q!==null){
+        if(m.q>C.r){
+          const end=Math.min(maxForward,Math.max(C.r,m.q));
+          line(ctx,xr,Y(ray.yr),X(end),Y(ray.ye+end*ray.ae),color,1.3,true);
+        }else if(m.q<0){
+          const end=Math.max(minBackward,m.q);
+          line(ctx,xe,Y(ray.ye),X(end),Y(ray.ye+end*ray.ae),color,1.3,true);
+        }
+      }
+    });
+  }
+  // The lens-only image is not the final image formed by the eye.
+  if(p.intermediate && lensPresent && m.qg!==null && p.extensions){
+    rayHeights.forEach((height,index)=>{
+      const ray=traceRay(height,m);
+      if(m.qg<0){
+        const endpoint=Math.max((left-xg)/S,m.qg);
+        line(ctx,xg,Y(height),xg+endpoint*S,Y(height+endpoint*ray.ag),colors[index],1,true);
+      }else if(m.qg>C.d){
+        const endpoint=Math.min((right-xg)/S,m.qg);
+        line(ctx,xe,Y(ray.ye),xg+endpoint*S,Y(height+endpoint*ray.ag),colors[index],1,true);
+      }
+    });
+  }
+  // Only draw a geometrical image at its calculated coordinate, never at a clipped edge.
+  if(m.q!==null){
+    const fx=X(m.q),fy=Y(m.c+m.q*m.e);
+    const visible=fx>=left && fx<=right && fy>=top && fy<=bottom;
+    const permitted=m.q>0 && m.q<=C.r || p.extensions;
+    if(visible && permitted){
+      ctx.save();if(m.q<0 || m.q>C.r)ctx.setLineDash([4,3]);
+      arrow(ctx,fx,axis,fy,"#123e55",1.5);ctx.restore();
+      ctx.save();ctx.strokeStyle="#123e55";ctx.fillStyle="white";ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(fx,fy,3,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.restore();
+      if(p.labels)label(ctx,t("focus"),fx,fy+(fy>=axis?18:-12),"center","#123e55");
+    }
+  }
+  if(p.intermediate && lensPresent && m.qg!==null){
+    const gx=xg+m.qg*S,gy=Y(m.qg*m.sourceSlope);
+    if(gx>=left && gx<=right && gy>=top && gy<=bottom && (m.qg>0 && m.qg<=C.d || p.extensions)){
+      ctx.save();ctx.strokeStyle="#7551ad";ctx.lineWidth=1.4;
+      ctx.beginPath();ctx.arc(gx,gy,5,0,Math.PI*2);ctx.stroke();ctx.restore();
+      if(p.labels)label(ctx,t("lensImage"),gx,gy-13,"center","#7551ad");
+    }
+  }
+  // A real retinal footprint, independent of where the geometrical focus lies.
+  const half=m.retinalWidth/2;
+  line(ctx,xr,Y(m.retinalCenter-half),xr,Y(m.retinalCenter+half),"#bc641b",6);
+  ctx.restore();
+
+  // Mark the compressed object-axis break without altering physical coordinates.
+  const breakX=(xo+xg)*.55;
+  ctx.save();ctx.fillStyle="#fcfdfd";ctx.fillRect(breakX-9,axis-6,19,12);ctx.restore();
+  line(ctx,breakX-7,axis+5,breakX-1,axis-5,"#546b7b",1.4);
+  line(ctx,breakX+1,axis+5,breakX+7,axis-5,"#546b7b",1.4);
+
+  // Fixed reference-distance bracket.
+  const bracketY=h-35;
+  line(ctx,xe,bracketY,xr,bracketY,"#8399a6",1);
+  line(ctx,xe,bracketY-3,xe,bracketY+3,"#8399a6",1);
+  line(ctx,xr,bracketY-3,xr,bracketY+3,"#8399a6",1);
+  label(ctx,"r = 17 mm",(xe+xr)/2,h-18);
+  line(ctx,xg,h-53,xe,h-53,"#8399a6",1);
+  label(ctx,"d = 12 mm",(xg+xe)/2,h-59);
+
+  if(p.labels){
+    label(ctx,t("objectRegion"),12,20,"left");
+    label(ctx,t("eyeRegion"),w-12,20,"right");
+    label(ctx,t("object"),xo,axis+.004*S+21);
+    label(ctx,t(lensPresent?"corrective":"reference"),xg,42,"center",undefined,w*.4);
+    label(ctx,t("eyeLens"),xe,68);
+    label(ctx,t("retina"),xr,86,"center","#a45c1f");
+    if(p.infinity)label(ctx,t("parallelIncident"),12,h-16,"left");
+    if(m.q!==null){
+      const fx=X(m.q),fy=Y(m.c+m.q*m.e);
+      if(fx<left || fx>right){
+        wrapCanvasText(ctx,t(fx>right?"offscreenRight":"offscreenLeft",{value:number(m.q*1000,3)}),14,h-80,w-28);
+      }else if(fy<top || fy>bottom){
+        wrapCanvasText(ctx,t("offscreenVertical",{value:number(m.q*1000,3)}),14,h-80,w-28);
+      }
+    }else{
+      wrapCanvasText(ctx,t(m.status),14,h-80,w-28);
+    }
+  }
+}
+function drawPreview(canvas,m){
+  const {ctx,w,h}=canvasContext(canvas);
+  const S=28000,axis=h*.40,tip=axis-m.retinalCenter*S;
+  const blur=Math.min(20,m.retinalWidth*S/3);
+  canvas.setAttribute("aria-label",t("previewDescription",{
+    width:number(m.retinalWidth*1000,4),center:number(m.retinalCenter*1000,4,true)
+  }));
+  line(ctx,10,axis,w-10,axis,"#b9cad4",1,true);
+  ctx.save();ctx.beginPath();ctx.rect(8,8,w-16,h-28);ctx.clip();
+  if(blur>.05)ctx.filter="blur("+blur+"px)";
+  // The image arrow follows the calculated retinal image center, not the eye-condition name.
+  arrow(ctx,w*.5,axis,tip,"#123e55",4);
+  ctx.restore();
+  label(ctx,"0",7,axis-3,"left");
+  const bottom=h-13;
+  const visibleWidth=Math.min(w-20,m.retinalWidth*S);
+  line(ctx,w/2-visibleWidth/2,bottom,w/2+visibleWidth/2,bottom,"#bc641b",4);
+}
+
+function renderActivities(){
+  const parent=$("activities");parent.replaceChildren();
+  app.activities.forEach((visibility,index)=>{
+    const n=index+1,card=document.createElement("article");card.className="activity";
+    const heading=document.createElement("h3");heading.textContent=t("q"+n);card.append(heading);
+    const buttons=document.createElement("div");buttons.className="button-row";
+    for(const type of ["hint","explanation"]){
+      const button=document.createElement("button");button.type="button";
+      const isHint=type==="hint",visible=visibility[type];
+      button.textContent=t(isHint?(visible?"hideHint":"showHint"):(visible?"hideExplanation":"showExplanation"));
+      button.setAttribute("aria-expanded",String(visible));
+      button.setAttribute("aria-controls","activity-"+type+"-"+n);
+      button.addEventListener("click",()=>{
+        app.activities[index][type]=!app.activities[index][type];
+        renderActivities();
+        const replacement=$("activity-button-"+type+"-"+n);
+        if(replacement)replacement.focus();
+      });
+      button.id="activity-button-"+type+"-"+n;buttons.append(button);
+    }
+    card.append(buttons);
+    for(const type of ["hint","explanation"]){
+      const content=document.createElement("p");content.className="answer";
+      content.id="activity-"+type+"-"+n;content.hidden=!visibility[type];
+      content.textContent=t((type==="hint"?"hint":"answer")+n);card.append(content);
+    }
+    parent.append(card);
+  });
+}
+
+/* Immutable numerical snapshots; display and CSV labels are translated at export time. */
+const recordHeaders=["hId","hTime","hCondition","hE","hU","hLens","hPc","hMode","hA","hMax","hPower","hQ","hDelta","hWidth","hStatus"];
+function recordValues(rec,forCSV=false){
+  const unavailable=rec.q===null || rec.q<=0;
+  return [
+    rec.id,
+    forCSV?rec.time:new Date(rec.time).toLocaleString(app.lang==="en"?"en-HK":"zh-HK"),
+    t(rec.condition),number(rec.E,2,true),
+    rec.infinity?t("infinity"):number(rec.u,3),
+    t(rec.lens?"yes":"no"),number(rec.Pc,8,true),t(rec.mode),
+    number(rec.A,8),number(rec.Amax,2),number(rec.Peye,8),
+    rec.q===null?(forCSV?"":t("noFiniteImage")):number(rec.q*1000,8),
+    unavailable?(forCSV?"":t("notApplicable")):number(rec.delta*1000,8,true),
+    number(rec.width*1000,8),t(rec.status)
+  ];
+}
+function renderRecords(){
+  const headerRow=document.createElement("tr");
+  [...recordHeaders,"hAction"].forEach(key=>{
+    const th=document.createElement("th");th.scope="col";th.textContent=t(key);headerRow.append(th);
+  });
+  $("recordHead").replaceChildren(headerRow);
+  const body=$("recordBody");body.replaceChildren();
+  app.records.forEach(rec=>{
+    const row=document.createElement("tr");
+    recordValues(rec).forEach(value=>{
+      const td=document.createElement("td");td.textContent=value;row.append(td);
+    });
+    const action=document.createElement("td"),button=document.createElement("button");
+    button.type="button";button.className="danger";button.textContent=t("delete");
+    button.setAttribute("aria-label",t("deleteAria",{id:rec.id}));
+    button.addEventListener("click",()=>{
+      app.records=app.records.filter(r=>r.id!==rec.id);
+      app.announcement={key:"deleted",args:{id:rec.id}};
+      renderRecords();renderAnnouncement();$("record").focus();
+    });
+    action.append(button);row.append(action);body.append(row);
+  });
+  $("emptyRecords").hidden=app.records.length>0;
+  $("export").disabled=app.records.length===0;
+  $("clear").disabled=app.records.length===0;
+}
+function renderAnnouncement(){
+  $("recordAnnouncement").textContent=app.announcement?t(app.announcement.key,app.announcement.args):"";
+}
+function recordExperiment(){
+  const p=app.physics,m=currentModels().after;
+  const rec=Object.freeze({
+    id:app.nextRecord++,time:new Date().toISOString(),condition:p.condition,E:p.E,
+    u:p.u,infinity:p.infinity,lens:p.lens,Pc:m.Pc,mode:p.mode,A:m.A,Amax:p.Amax,
+    Peye:m.Peye,q:m.q,delta:m.delta,width:m.retinalWidth,status:m.status
+  });
+  app.records.push(rec);app.announcement={key:"recorded",args:{id:rec.id}};
+  renderRecords();renderAnnouncement();
+}
+function exportCSV(){
+  if(!app.records.length)return;
+  const escape=value=>'"'+String(value??"").replace(/"/g,'""')+'"';
+  const rows=[recordHeaders.map(key=>t(key)),...app.records.map(rec=>recordValues(rec,true))];
+  const text="\uFEFF"+rows.map(row=>row.map(escape).join(",")).join("\r\n")+"\r\n";
+  const blob=new Blob([text],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=t("csvFilename")+".csv";document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+
+/* Executable equation checks; no claim of external browser testing. */
+function runChecks(){
+  const near=(a,b,eps=1e-10)=>Number.isFinite(a)&&Math.abs(a-b)<eps;
+  const p=defaults(),checks=[];
+  const add=(key,passed)=>checks.push({key,passed:!!passed});
+  const n=opticalModel(p,0);
+  add("testNormal",near(n.q,C.r));
+  const my={...p,condition:"myopia",E:-2},hy={...p,condition:"hyperopia",E:2};
+  add("testMyopia",opticalModel(my,0).q<C.r);
+  add("testHyperopia",opticalModel(hy,0).q>C.r);
+  add("testCorrection",[-8,-2,0,2,8].every(E=>near(opticalModel({...p,E},E/(1+C.d*E)).q,C.r)));
+  const finite={...p,infinity:false,u:.25};
+  add("testNear",near(opticalModel(finite,0).requiredA,1/(finite.u+C.d)));
+  const auto=opticalModel({...hy,mode:"automatic",Amax:4},0);
+  const limited=opticalModel({...hy,mode:"automatic",Amax:1},0);
+  add("testAuto",near(auto.A,2)&&near(auto.q,C.r)&&near(limited.A,1)&&limited.status==="behind");
+  add("testNegative",near(opticalModel({...my,mode:"automatic"},0).A,0));
+  const ideal=-2/(1-2*C.d);
+  const under=opticalModel(my,ideal*.5),correct=opticalModel(my,ideal),over=opticalModel(my,ideal*1.5);
+  add("testUnderOver",under.q<C.r&&near(correct.q,C.r)&&over.q>C.r);
+  add("testRays",[n,under,correct,over,opticalModel(finite,3)].every(m=>{
+    const rays=[-.001,0,.001].map(height=>traceRay(height,m));
+    const ys=rays.map(ray=>ray.ye+m.q*ray.ae);
+    return near(ys[0],ys[1])&&near(ys[1],ys[2]);
+  }));
+  const parallelEye={...finite,E:C.P0-1/(finite.u+C.d)};
+  const parallel=opticalModel(parallelEye,0);
+  add("testParallel",parallel.parallel&&parallel.q===null);
+  const virtual=opticalModel({...p,E:80},0);
+  add("testVirtual",virtual.q<0&&virtual.status==="virtual");
+  const singular=opticalModel(finite,1/finite.u+1/C.d);
+  add("testSingular",singular.singular&&singular.requiredA===null&&near(singular.q,0)&&Number.isFinite(singular.retinalWidth));
+  return checks;
+}
+const checks=runChecks();
+function renderChecks(){
+  $("validationTitle").textContent=t("validationTitle",{passed:checks.filter(c=>c.passed).length,total:checks.length});
+  $("validationResults").replaceChildren();
+  checks.forEach(check=>{
+    const li=document.createElement("li");
+    li.textContent=(check.passed?"✓ ":"✗ ")+t(check.passed?"pass":"fail")+" — "+t(check.key);
+    $("validationResults").append(li);
+  });
+}
+
+function renderAll(){
+  renderTranslations();syncControls();
+  const {before,after}=currentModels();
+  renderTheory(after);renderReadings("Before",before,false);renderReadings("After",after,app.physics.lens);
+  drawDiagram($("canvasBefore"),before,false,"withoutLens");
+  drawDiagram($("canvasAfter"),after,app.physics.lens,"currentLens");
+  drawPreview($("previewBefore"),before);drawPreview($("previewAfter"),after);
+  renderRecords();renderAnnouncement();renderActivities();renderChecks();
+}
+// One coalesced rendering frame, not a continuously running animation loop.
+let pendingFrame=0;
+function scheduleRender(){
+  if(pendingFrame)return;
+  pendingFrame=requestAnimationFrame(()=>{pendingFrame=0;renderAll()});
+}
+function changePhysics(mutator){
+  mutator(app.physics);app.error=null;scheduleRender();
+}
+function rejectInput(min,max,quarter){
+  app.error={key:"invalid",args:{min,max,step:quarter?t("stepQuarter"):""}};
+  syncControls();
+  $("inputError").scrollIntoView({block:"nearest",behavior:"auto"});
+}
+function bindPair(rangeId,numberId,key,getBounds,quarter=true){
+  $(rangeId).addEventListener("input",event=>{
+    const value=Number(event.target.value);
+    changePhysics(p=>{
+      p[key]=value;
+      if(key==="Amax")p.manualA=Math.min(p.manualA,value);
+    });
+  });
+  $(numberId).addEventListener("change",event=>{
+    const raw=event.target.value.trim(),value=Number(raw),[min,max]=getBounds();
+    const unchanged=raw!==""&&Number.isFinite(value)&&Math.abs(value-app.physics[key])<1e-7;
+    const onStep=!quarter||Math.abs(value*4-Math.round(value*4))<1e-8;
+    if(raw===""||!Number.isFinite(value)||value<min||value>max||(!onStep&&!unchanged)){
+      rejectInput(min,max,quarter);return;
+    }
+    changePhysics(p=>{
+      // Retain an unchanged theoretical number's internal precision.
+      if(!unchanged)p[key]=value;
+      if(key==="Amax")p.manualA=Math.min(p.manualA,p.Amax);
+    });
+  });
+}
+bindPair("errorRange","errorNumber","E",()=>{
+  const c=app.physics.condition;
+  return c==="myopia"?[-8,-.25]:c==="hyperopia"?[.25,8]:[0,0];
+});
+bindPair("aRange","aNumber","manualA",()=>[0,app.physics.Amax]);
+bindPair("maxRange","maxNumber","Amax",()=>[0,8]);
+bindPair("pcRange","pcNumber","Pc",()=>[-12,12]);
+
+$("condition").addEventListener("change",event=>changePhysics(p=>{
+  p.condition=event.target.value;
+  p.E=p.condition==="normal"?0:p.condition==="myopia"?-2:2;
+}));
+$("accommodation").addEventListener("change",event=>changePhysics(p=>p.mode=event.target.value));
+$("lensEnabled").addEventListener("change",event=>changePhysics(p=>p.lens=event.target.checked));
+$("uRange").addEventListener("input",event=>changePhysics(p=>{
+  p.u=Number((.1*Math.pow(60,Number(event.target.value)/1000)).toFixed(3));
+  p.u=clamp(p.u,.1,6);p.infinity=false;
+}));
+$("uNumber").addEventListener("change",event=>{
+  const raw=event.target.value.trim(),value=Number(raw);
+  if(raw===""||!Number.isFinite(value)||value<.1||value>6){rejectInput(.1,6,false);return}
+  changePhysics(p=>{p.u=value;p.infinity=false});
+});
+document.querySelectorAll("[data-distance]").forEach(button=>{
+  button.addEventListener("click",()=>changePhysics(p=>{
+    if(button.dataset.distance==="infinity")p.infinity=true;
+    else{p.infinity=false;p.u=Number(button.dataset.distance)}
+  }));
+});
+for(const [id,key] of [["showRays","rays"],["showLabels","labels"],["showExtensions","extensions"],["showIntermediate","intermediate"]]){
+  $(id).addEventListener("change",event=>changePhysics(p=>p[key]=event.target.checked));
+}
+$("hintToggle").addEventListener("click",()=>changePhysics(p=>p.theory=!p.theory));
+function applyTheory(which){
+  const m=currentModels().after,value=theoretical(app.physics,m)[which];
+  if(value===null||!Number.isFinite(value)||value<-12||value>12)return;
+  changePhysics(p=>{p.Pc=value;p.lens=true});
+}
+$("applyDistant").addEventListener("click",()=>applyTheory("distant"));
+$("applyCurrent").addEventListener("click",()=>applyTheory("current"));
+$("language").addEventListener("click",()=>{
+  app.lang=app.lang==="en"?"zh":"en";
+  if(app.error)app.error.args.step=app.error.args.step?t("stepQuarter"):"";
+  scheduleRender();
+});
+$("record").addEventListener("click",recordExperiment);
+$("export").addEventListener("click",exportCSV);
+$("clear").addEventListener("click",()=>{
+  if(!app.records.length||!window.confirm(t("clearConfirm")))return;
+  app.records=[];app.announcement={key:"cleared",args:{}};
+  renderRecords();renderAnnouncement();
+});
+$("reset").addEventListener("click",()=>{
+  if(!window.confirm(t("resetConfirm")))return;
+  app.physics=defaults();app.records=[];app.nextRecord=1;app.error=null;
+  app.activities=Array.from({length:5},()=>({hint:false,explanation:false}));
+  app.announcement={key:"resetDone",args:{}};scheduleRender();
+});
+window.addEventListener("resize",scheduleRender,{passive:true});
+if("ResizeObserver" in window){
+  const observer=new ResizeObserver(scheduleRender);
+  for(const id of ["canvasBefore","canvasAfter","previewBefore","previewAfter"])observer.observe($(id));
+}
+renderAll();
+</script>
+</body>
+</html>
