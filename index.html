@@ -146,6 +146,27 @@ footer{font-size:12px;color:var(--muted);padding:18px 3px}
   .card{box-shadow:none}
   .view{break-inside:avoid}
 }
+
+.lesson-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.lesson-nav button{flex:1;min-width:170px;min-height:48px}.lesson-nav button[aria-pressed=true]{background:var(--navy);color:#fff}
+.lesson-banner{padding:22px;border-radius:18px;background:linear-gradient(120deg,#123e55,#087e82);color:#fff;margin-bottom:18px}.lesson-banner h2{font-size:27px;margin:8px 0}.lesson-banner .given{font-size:30px;font-weight:800}.lesson-banner .small{color:#d7eded}.lesson-banner p{margin-top:10px}
+.lesson-settings{padding:15px 20px;margin-bottom:15px;display:grid;grid-template-columns:1fr 1fr;gap:14px}.lesson-settings label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}.lesson-settings p{grid-column:1/-1}
+.game-controls{display:grid;gap:14px}.game-controls input[type=text],.game-controls textarea{width:100%;padding:9px;border:1px solid var(--line);border-radius:9px;font:inherit;background:white;color:var(--ink)}.game-controls textarea{min-height:70px;resize:vertical}.numeric-unit{display:grid;grid-template-columns:1fr 80px;gap:7px}
+.feedback{font-size:13px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--soft);margin-top:12px}.feedback.good{color:#16634c;background:#e4f4ee}.feedback.bad{color:#8d4a0c;background:#fff0df}
+.score-grid{display:flex;gap:10px;justify-content:space-between;text-align:center;padding:12px;background:var(--soft);border-radius:10px;margin-top:12px}.score-grid b{display:block;font-size:23px;color:var(--navy)}.score-grid span{font-size:11px;color:var(--muted)}
+.explorer{padding:22px;margin-bottom:18px}.explorer-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.explorer h2{font-size:21px}.distance-given{font-size:21px;font-weight:750;font-variant-numeric:tabular-nums}
+.distance-track{position:relative;padding:30px 0 34px;margin:10px 12px}.distance-track input{margin:0;display:block;position:relative;z-index:2;cursor:grab;touch-action:none;height:38px;background:transparent}
+.distance-track input::-webkit-slider-runnable-track{height:12px;border-radius:8px;background:var(--range-fill)}.distance-track input::-webkit-slider-thumb{margin-top:-3px}.distance-track input::-moz-range-track{height:12px;border-radius:8px;background:var(--range-fill)}
+.boundary{position:absolute;top:53px;transform:translateX(-50%);font-size:11px;white-space:nowrap;z-index:3;pointer-events:none}.boundary::before{content:'';position:absolute;bottom:20px;left:50%;height:23px;border-left:2px dashed #375c70}.boundary.overlap{top:71px}.object-tag{position:absolute;top:1px;transform:translateX(-50%);font-size:12px;color:var(--navy);font-weight:750;pointer-events:none}.track-edge{position:absolute;bottom:0;font-size:11px;color:var(--muted)}.track-edge.right{right:0}
+.range-status{padding:13px;border-radius:11px;font-weight:700;margin-top:13px}.range-status.inside{background:#e4f4ee;color:#16634c}.range-status.near{background:#eee8f8;color:#61428b}.range-status.far{background:#fff0df;color:#8d4a0c}
+.live-readings{padding:12px 17px;border-top:1px solid var(--line);font-size:12px;line-height:1.8}.live-readings p{margin:0}.live-readings .explanation{padding:9px;background:var(--soft);border-radius:8px;margin-top:7px}
+.solution{padding:18px;background:#eef8f4;border:1px solid #bcded6;border-radius:13px;margin-top:18px}.solution .formula{margin:10px 0}.lesson-note{margin-top:12px;font-size:12px;color:var(--muted)}
+.game-log{padding:20px;margin-top:20px}.game-log td{white-space:normal;min-width:100px;max-width:350px}.game-log textarea{resize:vertical}
+body[data-lesson=true] .controls,body[data-lesson=true] .lower,body[data-lesson=true] .workflow,body[data-lesson=true] .readings,body[data-lesson=true] .capacity,body[data-lesson=true] .stage>.notice{display:none!important}
+body[data-lesson=true] .comparisons{grid-template-columns:1fr 1fr}body[data-lesson=true] .diagram{cursor:grab;touch-action:none}
+@media(max-width:1150px){body[data-lesson=true] .comparisons{grid-template-columns:1fr}}
+@media(max-width:750px){.lesson-settings{grid-template-columns:1fr}.lesson-nav button{min-width:140px}.explorer{padding:16px}.lesson-banner .given{font-size:25px}}
+@media print{.lesson-nav,.lesson-settings,.game-controls button{display:none}.lesson-banner{color:var(--ink);background:white;border:1px solid var(--line)}}
+
 </style>
 </head>
 <body>
@@ -161,8 +182,27 @@ footer{font-size:12px;color:var(--muted);padding:18px 3px}
 
 <div class="workflow" data-i18n="workflow"></div>
 
+
+<nav class="lesson-nav" data-aria="modesAria"><button id="modeForward" data-mode="forward" data-i18n="gameForward" type="button"></button><button id="modeReverse" data-mode="reverse" data-i18n="gameReverse" type="button"></button><button id="modeLab" data-mode="lab" data-i18n="gameLab" type="button"></button></nav>
+<section id="lessonSettings" class="card lesson-settings"><div><label for="lessonGap" data-i18n="gapLabel"></label><select id="lessonGap"><option value="0" data-i18n="gapZero"></option><option value="0.012" data-i18n="gapTwelve"></option></select></div><div id="reverseSetting"><label for="reverseKind" data-i18n="bankLabel"></label><select id="reverseKind"><option value="mixed" data-i18n="bankMixed"></option><option value="far" data-i18n="bankFar"></option><option value="near" data-i18n="bankNear"></option></select></div><p class="small" data-i18n="gameAssumptions"></p></section>
+<section id="lessonBanner" class="lesson-banner"><div id="caseNumber" class="small"></div><h2 id="caseTitle"></h2><div id="caseGiven" class="given"></div><p id="caseTask"></p><p id="caseModelNote" class="small"></p></section>
+
 <main>
 <div class="workspace">
+
+<aside id="gameControls" class="game-controls" data-aria="answerAria">
+<section class="card control-card"><h2 data-i18n="answerTitle"></h2><p class="hint-text" data-i18n="noFirstAttempt"></p>
+<form id="gameForm" novalidate>
+<div id="forwardFields"><div class="field"><label for="answerLens" class="field-label" data-i18n="chooseLens"></label><select id="answerLens"><option value="" data-i18n="chooseOption"></option><option value="diverging" data-i18n="diverging"></option><option value="converging" data-i18n="converging"></option></select></div><div class="field"><label for="answerPower" class="field-label" data-i18n="answerPowerLabel"></label><input id="answerPower" type="text" inputmode="decimal" autocomplete="off" placeholder="±0.000"></div><div class="field"><label for="answerFocal" class="field-label" data-i18n="answerFocalLabel"></label><div class="numeric-unit"><input id="answerFocal" type="text" inputmode="decimal" autocomplete="off"><select id="focalUnit" data-aria="focalUnitAria"><option value="1">m</option><option value=".01">cm</option></select></div></div></div>
+<div id="reverseFields"><div class="field"><label id="answerPointLabel" for="answerPoint" class="field-label"></label><div class="numeric-unit"><input id="answerPoint" type="text" inputmode="decimal" autocomplete="off"><select id="pointUnit" data-aria="pointUnitAria"><option value="1">m</option><option value=".01">cm</option></select></div></div></div>
+<div class="field"><label for="answerReason" class="field-label" data-i18n="reasonLabel"></label><select id="answerReason"><option value="" data-i18n="chooseOption"></option><option value="virtual" data-i18n="reasonVirtual"></option><option value="retina" data-i18n="reasonRetina"></option><option value="behind" data-i18n="reasonBehind"></option></select></div>
+<div class="field"><label for="answerWorking" class="field-label" data-i18n="optionalNotes"></label><textarea id="answerWorking" maxlength="2000"></textarea></div>
+<p class="hint-text" data-i18n="roundingNote"></p><div class="button-row"><button type="submit" id="checkAnswer" class="primary" data-i18n="checkAnswer"></button><button type="button" id="gameHint" data-i18n="gameHint"></button></div></form>
+<div id="feedback" class="feedback" role="status" aria-live="polite"></div><div id="hintText" class="hint-box" hidden></div><div class="button-row"><button id="nextCase" type="button" class="primary" data-i18n="nextCase"></button><button id="revealCase" type="button" data-i18n="revealCase"></button></div></section>
+<section class="card control-card" id="trialPanel"><h2 data-i18n="trialTitle"></h2><label class="check" style="margin-top:12px"><input id="trialEnabled" type="checkbox"><span data-i18n="trialEnabled"></span></label><div class="field"><label for="trialPower" class="field-label" data-i18n="trialPower"></label><input id="trialPower" type="range" min="-8" max="8" step=".05" value="0"><div id="trialValue" class="hint-value"></div></div><p class="hint-text" data-i18n="trialNote"></p></section>
+<section class="card control-card"><h2 data-i18n="sessionTitle"></h2><div class="score-grid"><div><b id="scorePoints">0</b><span data-i18n="pointsWord"></span></div><div><b id="scoreSolved">0</b><span data-i18n="solvedWord"></span></div><div><b id="scoreAttempts">0</b><span data-i18n="attemptsWord"></span></div></div><p class="hint-text" data-i18n="scoreNote"></p><div class="button-row"><button id="exportAttempts" type="button" data-i18n="exportAttempts"></button><button id="resetGame" type="button" data-i18n="resetGame"></button></div></section>
+</aside>
+
 <aside class="controls" data-aria="controls">
   <section class="card control-card">
     <div class="section-tag">01</div>
@@ -263,6 +303,14 @@ footer{font-size:12px;color:var(--muted);padding:18px 3px}
 </aside>
 
 <section class="stage" data-aria="simulation">
+
+<section id="explorer" class="card explorer"><div class="explorer-head"><h2 data-i18n="explorerTitle"></h2><div id="distanceReadout" class="distance-given"></div></div><p class="hint-text" data-i18n="dragInstructions"></p>
+<div class="distance-track"><span id="objectTag" class="object-tag" data-i18n="object"></span><input id="objectDrag" type="range" min="0" max="1000" step="1" value="500" data-aria="dragAria"><span id="nearMarker" class="boundary"></span><span id="farMarker" class="boundary"></span><span class="track-edge">5 cm</span><span class="track-edge right">12 m</span></div>
+<div class="button-row"><button type="button" data-explore-distance=".1">10 cm</button><button type="button" data-explore-distance=".25">25 cm</button><button type="button" data-explore-distance=".5">50 cm</button><button type="button" data-explore-distance="1">1 m</button><button type="button" data-explore-distance="infinity" data-i18n="infinity"></button><button type="button" id="snapNear" data-i18n="snapNear"></button><button type="button" id="snapFar" data-i18n="snapFar"></button></div>
+<div class="input-row" style="margin-top:12px;grid-template-columns:minmax(0,1fr) 120px"><label for="objectDistance" data-i18n="distanceInputLabel"></label><input id="objectDistance" type="number" min=".05" max="12" step=".001"></div>
+<div id="rangeStatus" class="range-status" role="status" aria-live="polite"></div><p id="rangeExplanation" class="lesson-note"></p><p class="lesson-note" data-i18n="exactFocusNote"></p>
+</section>
+
   <div class="stage-top">
     <h2 data-i18n="comparisonTitle"></h2>
     <div class="toggles">
@@ -280,6 +328,7 @@ footer{font-size:12px;color:var(--muted);padding:18px 3px}
       </div>
       <canvas id="canvasBefore" class="diagram" role="img"></canvas>
       <p class="scale-note" data-i18n="scaleNote"></p>
+      <div id="liveBefore" class="live-readings" hidden></div>
       <dl id="readingsBefore" class="readings"></dl>
       <div class="retinal">
         <h3 data-i18n="retinalTitle"></h3>
@@ -297,6 +346,7 @@ footer{font-size:12px;color:var(--muted);padding:18px 3px}
       </div>
       <canvas id="canvasAfter" class="diagram" role="img"></canvas>
       <p class="scale-note" data-i18n="scaleNote"></p>
+      <div id="liveAfter" class="live-readings" hidden></div>
       <dl id="readingsAfter" class="readings"></dl>
       <div class="retinal">
         <h3 data-i18n="retinalTitle"></h3>
@@ -317,6 +367,10 @@ footer{font-size:12px;color:var(--muted);padding:18px 3px}
   <div class="notice" data-i18n="comparisonNote"></div>
 </section>
 </div>
+
+
+<section id="caseSolution" class="solution" hidden></section>
+<section id="gameLogPanel" class="card game-log"><div class="panel-head"><h2 data-i18n="logTitle"></h2><p class="small" data-i18n="logNote"></p></div><div class="table-wrap"><table><thead id="gameLogHead"></thead><tbody id="gameLogBody"></tbody></table><div id="emptyGameLog" class="empty" data-i18n="emptyGameLog"></div></div></section>
 
 <div class="lower">
 <section class="card panel">
@@ -661,8 +715,9 @@ zh:{
 }
 };
 
+let lesson=null;
 const C = Object.freeze({
-  r:0.017,d:0.012,P0:1/0.017,
+  r:0.017,get d(){return lesson&&lesson.mode!=="lab"?lesson.gap:.012},P0:1/0.017,
   apertureRadius:0.001,objectHeight:0.004,angularHeight:0.012,
   sharpTolerance:0.00005,coefficientTolerance:1e-10,singularTolerance:1e-12
 });
@@ -719,7 +774,7 @@ function opticalModel(p,effectivePc){
   if(parallel) status="parallel";
   else if(Math.abs(q)<C.singularTolerance) status="planeFocus";
   else if(q<0) status="virtual";
-  else if(Math.abs(delta)<=C.sharpTolerance) status="sharp";
+  else if(Math.abs(delta)<=(lesson&&lesson.mode!=="lab"?1e-9:C.sharpTolerance)) status="sharp";
   else status=q<C.r?"front":"behind";
   const retinalCenter = c+C.r*e;
   const retinalWidth = 2*C.apertureRadius*Math.abs(B+C.r*D);
@@ -928,13 +983,13 @@ function drawDiagram(canvas,m,lensPresent,viewKey){
   const {ctx,w,h}=canvasContext(canvas),p=app.physics;
   const S=w*.33/.027;
   const xe=w*.62,xg=xe-C.d*S,xr=xe+C.r*S;
-  const xo=25,axis=h*.50;
+  const xo=gameActive()?25+(xg-42-25)*(1-gameObjectFraction(p)):25,axis=h*.50;
   const Y=v=>axis-v*S;
   const X=l=>xe+l*S;
   const left=12,right=w-12,top=51,bottom=h-54;
   const maxForward=(right-xe)/S,minBackward=(left-xe)/S;
   const colors=["#087e82","#cd7a29","#7653ad"];
-  canvas.setAttribute("aria-label",t("canvasDescription",{
+  canvas.setAttribute("aria-label",t(gameActive()?"gameCanvas":"canvasDescription",{distance:p.infinity?t("infinity"):number(p.u+C.d,3)+" m",
     view:t(viewKey),condition:t(p.condition),E:number(p.E,2,true),u:uText(p),
     Pc:number(m.Pc,6,true),A:number(m.A,4),status:t(m.status),
     q:qText(m),width:number(m.retinalWidth*1000,4)
@@ -1016,7 +1071,7 @@ function drawDiagram(canvas,m,lensPresent,viewKey){
   ctx.restore();
 
   // Mark the compressed object-axis break without altering physical coordinates.
-  const breakX=(xo+xg)*.55;
+  const breakX=xo+(xg-xo)*.5;
   ctx.save();ctx.fillStyle="#fcfdfd";ctx.fillRect(breakX-9,axis-6,19,12);ctx.restore();
   line(ctx,breakX-7,axis+5,breakX-1,axis-5,"#546b7b",1.4);
   line(ctx,breakX+1,axis+5,breakX+7,axis-5,"#546b7b",1.4);
@@ -1028,7 +1083,7 @@ function drawDiagram(canvas,m,lensPresent,viewKey){
   line(ctx,xr,bracketY-3,xr,bracketY+3,"#8399a6",1);
   label(ctx,"r = 17 mm",(xe+xr)/2,h-18);
   line(ctx,xg,h-53,xe,h-53,"#8399a6",1);
-  label(ctx,"d = 12 mm",(xg+xe)/2,h-59);
+  label(ctx,"d = "+number(C.d*1000,0)+" mm",(xg+xe)/2,h-59);
 
   if(p.labels){
     label(ctx,t("objectRegion"),12,20,"left");
@@ -1318,6 +1373,182 @@ if("ResizeObserver" in window){
   const observer=new ResizeObserver(scheduleRender);
   for(const id of ["canvasBefore","canvasAfter","previewBefore","previewAfter"])observer.observe($(id));
 }
+
+Object.assign(I18N.en,{"docTitle": "Eye Optics · Drag & Discover", "title": "Eye Optics · Drag & Discover", "subtitle": "Explore immediately: drag the object through the clear-vision range, compare the retinal focus, then find the corrective lens or missing point.", "modesAria": "Lesson modes", "gameForward": "Game 1 · Far point → lens", "gameReverse": "Game 2 · Lens → far / near point", "gameLab": "Free laboratory", "gapLabel": "Lens-to-eye separation d", "gapZero": "0 mm · school approximation", "gapTwelve": "12 mm · separated lenses", "bankLabel": "Game 2 question bank", "bankMixed": "Mixed far / near points", "bankFar": "Far point only", "bankNear": "Near point only", "gameAssumptions": "Distances on the drag ruler are measured from the eye. Corrective-lens u, v and f are measured from the corrective lens. The eye automatically tries to focus, but accommodation is bounded; it never becomes negative.", "answerAria": "Game answers and trial lens", "answerTitle": "Explore, then answer", "noFirstAttempt": "No written first attempt is required. Dragging, trial lenses, hints and reveal are available immediately.", "chooseLens": "Corrective lens type", "chooseOption": "Choose…", "answerPowerLabel": "Signed lens power P (D)", "answerFocalLabel": "Signed focal length f", "focalUnitAria": "Focal length unit", "pointUnitAria": "Point distance unit", "reasonLabel": "Image formed by the corrective lens alone", "reasonVirtual": "A virtual image at the uncorrected far / near point", "reasonRetina": "A real image on the retina", "reasonBehind": "A virtual image behind the eye", "optionalNotes": "Optional notes / working", "roundingNote": "Use signed numbers. Round to 2–3 decimal places. Acceptance tolerance: 1%, with floors of 0.015 D, 0.002 m for f, and 0.003 m for point distance. Written notes are not automatically assessed.", "checkAnswer": "Check answer", "gameHint": "Focused hint", "nextCase": "Next case", "revealCase": "Reveal · zero points", "trialTitle": "Try a corrective lens", "trialEnabled": "Use the trial lens", "trialPower": "Drag trial power P (D)", "trialNote": "Game 1: test powers freely. Game 2: the given lens is fixed. A lens that helps at the target distance may not work at every distance.", "sessionTitle": "Lesson score", "pointsWord": "Points", "solvedWord": "Solved", "attemptsWord": "Checks", "scoreNote": "Correct on check 1 / 2 / 3 / later: 10 / 7 / 4 / 2 points. Each hint costs 2 points. Dragging is free. Revealing or skipping earns zero points. Export before reloading.", "exportAttempts": "Export lesson CSV", "resetGame": "Reset lesson", "explorerTitle": "Drag through the uncorrected range", "dragInstructions": "Drag the distance slider, or drag in the object region of either ray diagram. Green marks the uncorrected clear-vision interval. In Game 2, locate the unknown boundary by observation. Both diagrams update live.", "dragAria": "Draggable object distance, logarithmic scale", "snapNear": "At near point", "snapFar": "At far point", "distanceInputLabel": "Object-to-eye distance (m)", "distanceReadout": "Object distance: {value} cm", "distanceInfinity": "Object distance: infinity", "nearMarker": "Near point {value}", "farMarker": "Far point {value}", "unknownMarker": "?", "infiniteMarker": "∞ →", "rangeInside": "Uncorrected eye: within the clear-vision range", "rangeNear": "Uncorrected eye: too close — beyond the near-point limit", "rangeFar": "Uncorrected eye: too far — beyond the far-point limit", "explainInside": "Available accommodation is sufficient: the uncorrected eye can put the image on the retina.", "explainNear": "The eye has reached its maximum accommodation. It cannot add the extra power required, so the focus remains behind the retina.", "explainFar": "The eye is fully relaxed. Focusing this object would require negative accommodation, which the eye cannot supply; the focus stays in front of the retina.", "exactFocusNote": "Lesson model: clear means a calculated retinal intersection (numerical tolerance 0.000001 mm), not a clinical visual-acuity threshold. Blur grows continuously outside the range; just beyond a boundary the defocus may be visually subtle. The preview is illustrative.", "caseCount": "CASE {id}", "forwardTitle": "Find the lens for infinity", "reverseFarTitle": "Recover the uncorrected far point", "reverseNearTitle": "Recover the uncorrected near point", "givenFar": "Uncorrected far point = {value} cm", "givenPower": "Corrective lens power = {value} D", "forwardTask": "Explore the uncorrected range, then find the lens type, signed power and focal length needed for a relaxed eye to see infinity clearly. Dragging to a different distance does not change this target.", "reverseFarTask": "The given lens corrects infinity for a relaxed myopic eye. Explore the uncorrected boundary and find its far point distance from the eye.", "reverseNearTask": "The given reading lens makes 25.0 cm from the eye the corrected near point, at the same maximum accommodation. Explore and calculate the uncorrected near point.", "farModelNote": "Fixed teaching eye: maximum accommodation = 4.00 D. Separation d = {gap} mm. The near point is model-dependent; it is not inferred from lens power alone.", "nearModelNote": "Reading-case assumption: the uncorrected far point is infinity; only accommodation capacity is reduced. This is not a diagnosis of hyperopia or presbyopia. Separation d = {gap} mm. Reading glasses need not give clear distance vision.", "answerFar": "Uncorrected far point distance", "answerNear": "Uncorrected near point distance", "readyFeedback": "Drag and investigate now, or enter your answer directly. No first-attempt checkpoint.", "missingFields": "Complete the numerical answers and selections. No written working is required.", "badNumber": "Enter finite values: power from −12 to +12 D, non-zero focal length, and a positive point distance.", "wrongLens": "Check whether parallel light needs extra convergence or extra divergence.", "wrongPower": "The lens power does not match correction for infinity. Check its sign, metres and the lens-to-eye separation.", "wrongFocal": "Check f = 1/P in metres, including the sign.", "wrongPoint": "Check the virtual-image sign and reference plane. In a reading case, also use the stated 25.0 cm corrected near point.", "wrongReason": "The corrective lens alone presents a virtual image for the eye to focus; the eye forms the final retinal image.", "correctFeedback": "Correct for the stated target. {points} points earned. You can still drag the object and compare the corrected and uncorrected ranges.", "revealedFeedback": "Model answer revealed for zero points. Keep dragging to investigate where this lens does and does not help.", "hintFar1": "At infinity, the corrective lens must make the incoming rays appear to originate at the uncorrected far point.", "hintFar2": "For the corrective lens alone: P = 1/u + 1/v, u = ∞, and v is negative for a virtual image on the object side.", "hintFar3": "If F is measured from the eye, v = −(F − d). Use P = 1/f and report F from the eye.", "hintNear1": "The lens must make a 25.0 cm object appear to be at the uncorrected near point.", "hintNear2": "Use P = 1/u + 1/v. A virtual image on the object side has v < 0; the near point is not simply 1/P.", "hintNear3": "u = 0.250 − d and v = −(N − d). Solve for N and report the distance from the eye.", "beforeHeading": "Uncorrected eye · live", "afterHeading": "With corrective lens · live", "noLensHeading": "Trial lens removed · live", "gameStage": "Watch the retinal focus", "liveA": "Accommodation: required {required} D; actual {actual} D; capacity {max} D.", "liveFocus": "Image distance q = {q} mm; retina = 17.000 mm; q − r = {delta} mm.", "liveInside": "Retinal focus: available accommodation is sufficient.", "liveNegative": "No retinal focus: the required accommodation is negative.", "liveExceeded": "No retinal focus: the requirement exceeds maximum accommodation.", "liveSharp": "Image on the retina", "gameScale": "Broken horizontal scale. Drag in the object region to move the source; the enlarged eye region is not a distance ruler.", "gameCanvas": "{view}. {status}. Object distance {distance}. Eye accommodation is bounded. Dragging is available in the object region.", "solutionTitle": "Model solution", "solutionFar": "A diverging lens presents a virtual image at the uncorrected far point. The relaxed eye focuses that image on the retina.", "solutionNear": "The reading lens presents a virtual image at the uncorrected near point. The eye focuses it at maximum accommodation. This is a reading correction, not a universal distance prescription.", "solutionConvention": "Convention: u > 0 for a real object; v < 0 for a virtual image on the object side; P = 1/f. F and N are positive distances from the eye.", "logTitle": "Answer checks", "logNote": "Dragging does not count as an answer check. Submitted values and optional notes are preserved; correct answers are not listed here. Records stay in this tab until exported.", "emptyGameLog": "No answer checks yet. You can explore immediately.", "logCase": "Case", "logGame": "Game", "logPoint": "Point", "logTime": "Time", "logGiven": "Given", "logGap": "d (mm)", "logTry": "Check", "logAnswer": "Submitted answer", "logDistance": "Object distance (m)", "logNotes": "Optional notes", "logHints": "Hints", "logResult": "Result", "logScore": "Points", "farWord": "Far", "nearWord": "Near", "correctWord": "Correct", "incorrectWord": "Revise", "revealWord": "Revealed", "skipWord": "Skipped", "lessonCsv": "eye-optics-drag-lesson", "revealConfirm": "Reveal the answer now for zero points?", "skipConfirm": "Skip this unsolved case for zero points?", "labConfirm": "Opening the free laboratory ends this case and exposes all eye controls. Continue?", "resetConfirmGame": "Reset all lesson scores and answer records? Export first if you need them.", "distanceError": "Enter an object-to-eye distance from 0.05 to 12 m.", "gameFooter": "Simplified physics lesson, not prescription advice. Automatic accommodation is bounded, not unlimited autofocus. Notes are optional and require teacher review. The clear-vision model and blur preview do not predict clinical visual acuity."});Object.assign(I18N.zh,{"docTitle": "眼睛光學 · 拖動探索", "title": "眼睛光學 · 拖動探索", "subtitle": "立即探索：拖動物體穿過清晰視距範圍，比較視網膜聚焦，再求矯正鏡片或未知遠點／近點。", "modesAria": "課堂模式", "gameForward": "遊戲 1 · 遠點 → 鏡片", "gameReverse": "遊戲 2 · 鏡片 → 遠點／近點", "gameLab": "自由實驗室", "gapLabel": "鏡片至眼透鏡間距 d", "gapZero": "0 mm · 中學近似", "gapTwelve": "12 mm · 有間距透鏡", "bankLabel": "遊戲 2 題庫", "bankMixed": "混合遠點／近點", "bankFar": "只問遠點", "bankNear": "只問近點", "gameAssumptions": "拖動尺上的距離均由眼睛量起；矯正鏡片的 u、v、f 均由鏡片量起。眼睛會自動嘗試調節，但調節有上限，也不能使用負調節。", "answerAria": "遊戲答案與測試鏡片", "answerTitle": "探索後作答", "noFirstAttempt": "不必先提交首次計算。拖動、測試鏡片、提示及顯示答案均可立即使用。", "chooseLens": "矯正鏡片種類", "chooseOption": "請選擇…", "answerPowerLabel": "帶正負號的光焦度 P（D）", "answerFocalLabel": "帶正負號的焦距 f", "focalUnitAria": "焦距單位", "pointUnitAria": "遠點／近點距離單位", "reasonLabel": "僅矯正鏡片所形成的像", "reasonVirtual": "在未矯正遠點／近點形成虛像", "reasonRetina": "在視網膜形成實像", "reasonBehind": "在眼睛後方形成虛像", "optionalNotes": "筆記／計算（可留空）", "roundingNote": "輸入帶正負號的數字，保留 2–3 位小數。評分容差為 1%；最少為 0.015 D、焦距 0.002 m、遠點／近點距離 0.003 m。文字筆記不會自動評核。", "checkAnswer": "檢查答案", "gameHint": "聚焦提示", "nextCase": "下一題", "revealCase": "顯示答案 · 零分", "trialTitle": "測試矯正鏡片", "trialEnabled": "使用測試鏡片", "trialPower": "拖動光焦度 P（D）", "trialNote": "遊戲 1 可自由測試鏡片；遊戲 2 的已知鏡片固定。在目標距離有效的鏡片，不一定適用所有物距。", "sessionTitle": "課堂分數", "pointsWord": "分數", "solvedWord": "答對", "attemptsWord": "檢查", "scoreNote": "第 1／2／3／其後次檢查答對：10／7／4／2 分。每個提示扣 2 分。拖動不扣分。顯示答案或跳過得零分。重新載入前請匯出。", "exportAttempts": "匯出課堂 CSV", "resetGame": "重設課堂", "explorerTitle": "拖動穿過未矯正清晰範圍", "dragInstructions": "拖動距離滑桿，或在任一光線圖的物體區拖動。綠色代表未矯正清晰視距範圍。遊戲 2 可透過觀察找出未知邊界。兩幅光線圖即時更新。", "dragAria": "可拖動的物距，採用對數比例", "snapNear": "移至近點", "snapFar": "移至遠點", "distanceInputLabel": "物體至眼睛距離（m）", "distanceReadout": "物距：{value} cm", "distanceInfinity": "物距：無限遠", "nearMarker": "近點 {value}", "farMarker": "遠點 {value}", "unknownMarker": "？", "infiniteMarker": "∞ →", "rangeInside": "未矯正眼睛：位於清晰視距範圍內", "rangeNear": "未矯正眼睛：太近，超出近點限制", "rangeFar": "未矯正眼睛：太遠，超出遠點限制", "explainInside": "可用調節足夠：未矯正眼睛能把像聚焦於視網膜。", "explainNear": "眼睛已達最大調節，無法再增加所需的光焦度；焦點仍在視網膜後方。", "explainFar": "眼睛已完全放鬆；要聚焦此物體需要負調節，而眼睛不能提供，所以焦點仍在視網膜前方。", "exactFocusNote": "教學模型：「清晰」指計算所得光線交於視網膜（數值容差 0.000001 mm），並非臨床視力標準。超出範圍時離焦會連續增加；剛越過邊界的差異可能很細微。預覽只作示意。", "caseCount": "第 {id} 題", "forwardTitle": "求看清無限遠的鏡片", "reverseFarTitle": "反推未矯正遠點", "reverseNearTitle": "反推未矯正近點", "givenFar": "未矯正遠點 = {value} cm", "givenPower": "矯正鏡片光焦度 = {value} D", "forwardTask": "探索未矯正清晰範圍，再求放鬆的眼睛看清無限遠所需的鏡片種類、帶正負號的光焦度及焦距。拖動物體不會改變本題的矯正目標。", "reverseFarTask": "已知鏡片使放鬆的近視眼看清無限遠。探索未矯正邊界，求由眼睛量起的遠點距離。", "reverseNearTask": "已知閱讀鏡片在相同最大調節下，使矯正近點位於眼睛前方 25.0 cm。探索並計算未矯正近點。", "farModelNote": "固定教學眼睛：最大調節為 4.00 D；鏡片間距 d = {gap} mm。近點取決於模型，不能只由鏡片光焦度推斷。", "nearModelNote": "閱讀題假設：未矯正遠點在無限遠，只有調節能力降低；並非遠視或老花診斷。鏡片間距 d = {gap} mm。閱讀鏡片不一定使遠方清晰。", "answerFar": "未矯正遠點距離", "answerNear": "未矯正近點距離", "readyFeedback": "現在即可拖動探索，或直接輸入答案；沒有首次嘗試關卡。", "missingFields": "請完成數值欄及選項；不必提交文字計算。", "badNumber": "請輸入有限數：光焦度 −12 至 +12 D、非零焦距，以及正的遠點／近點距離。", "wrongLens": "檢查平行光需要更會聚還是更發散。", "wrongPower": "光焦度未符合看清無限遠的條件。檢查正負號、米的換算及鏡片間距。", "wrongFocal": "檢查以米計的 f = 1/P，並保留正負號。", "wrongPoint": "檢查虛像正負號及參考平面；閱讀題還須使用指定的 25.0 cm 矯正近點。", "wrongReason": "矯正鏡片先形成讓眼睛聚焦的虛像；眼睛才形成最終視網膜像。", "correctFeedback": "符合指定矯正目標，獲得 {points} 分。仍可拖動物體，比較矯正前後的清晰範圍。", "revealedFeedback": "已顯示模型答案，本題零分。繼續拖動，觀察鏡片在哪些物距有效或無效。", "hintFar1": "物體在無限遠時，鏡片應使光線彷彿來自未矯正遠點。", "hintFar2": "僅矯正鏡片：P = 1/u + 1/v，u = ∞；物體一側的虛像 v 為負。", "hintFar3": "若 F 由眼睛量起，v = −(F − d)。使用 P = 1/f，並由眼睛量起報告 F。", "hintNear1": "鏡片須使 25.0 cm 的物體看起來位於未矯正近點。", "hintNear2": "使用 P = 1/u + 1/v；物體一側的虛像 v < 0，近點並非直接等於 1/P。", "hintNear3": "u = 0.250 − d，v = −(N − d)。求 N，並由眼睛量起報告距離。", "beforeHeading": "未矯正眼睛 · 即時", "afterHeading": "加入矯正鏡片 · 即時", "noLensHeading": "已移除測試鏡片 · 即時", "gameStage": "觀察視網膜聚焦", "liveA": "調節：所需 {required} D；實際 {actual} D；上限 {max} D。", "liveFocus": "像距 q = {q} mm；視網膜 = 17.000 mm；q − r = {delta} mm。", "liveInside": "聚焦於視網膜：可用調節足夠。", "liveNegative": "不能聚焦於視網膜：所需調節為負。", "liveExceeded": "不能聚焦於視網膜：所需調節超出上限。", "liveSharp": "像在視網膜上", "gameScale": "橫軸採用斷軸比例。在物體區拖動以移動光源；放大的眼睛區不能用作距離尺。", "gameCanvas": "{view}。{status}。物距 {distance}。眼睛調節有上限，可在物體區拖動。", "solutionTitle": "模型解答", "solutionFar": "發散鏡在未矯正遠點形成虛像，放鬆的眼睛再把它聚焦於視網膜。", "solutionNear": "閱讀鏡片在未矯正近點形成虛像，眼睛以最大調節聚焦。這是閱讀矯正，不是適用所有物距的處方。", "solutionConvention": "正負號：約定實物 u > 0；物體一側的虛像 v < 0；P = 1/f。F 和 N 均是由眼睛量起的正距離。", "logTitle": "答案檢查紀錄", "logNote": "拖動不算作答案檢查。提交的數值及可選筆記會保留，此處不列出正確答案。紀錄只保留於本分頁，除非匯出。", "emptyGameLog": "尚未檢查答案；現在即可探索。", "logCase": "題目", "logGame": "遊戲", "logPoint": "遠點／近點", "logTime": "時間", "logGiven": "已知條件", "logGap": "d（mm）", "logTry": "檢查", "logAnswer": "提交答案", "logDistance": "物距（m）", "logNotes": "可選筆記", "logHints": "提示數", "logResult": "結果", "logScore": "分數", "farWord": "遠點", "nearWord": "近點", "correctWord": "正確", "incorrectWord": "待修訂", "revealWord": "已顯示答案", "skipWord": "已跳過", "lessonCsv": "眼睛光學拖動課堂紀錄", "revealConfirm": "現在以零分顯示答案？", "skipConfirm": "以零分跳過未答對的題目？", "labConfirm": "開啟自由實驗室會結束本題並顯示全部眼睛控制項。繼續？", "resetConfirmGame": "重設全部課堂分數及答案紀錄？如需保留，請先匯出。", "distanceError": "請輸入 0.05 至 12 m 的物體至眼睛距離。", "gameFooter": "簡化物理教學，並非處方建議。自動調節受上限限制，不是無限自動對焦。筆記可留空，須由教師檢視。清晰範圍模型及離焦預覽不預測臨床視力。"});
+lesson={mode:'forward',gap:0,bank:'mixed',case:null,nextId:1,previous:'',score:0,solved:0,checks:0,logs:[],feedback:{key:'readyFeedback',kind:''}};
+const GAME={min:.05,max:12,reading:.25,farDistances:[.20,.25,.40,.50,.75,1,1.5,2,3],farPowers:[-.5,-1,-1.25,-2,-2.5,-4,-5,-6],nearPowers:[.5,1,1.5,2,2.5,3]};
+let laboratorySnapshot=defaults();
+function gameActive(){return lesson!==null&&lesson.mode!=='lab'}
+function caseDone(){return lesson.case&&(lesson.case.solved||lesson.case.revealed)}
+function gameDistancePosition(s){return clamp(Math.log(s/GAME.min)/Math.log(GAME.max/GAME.min),0,1)}
+function gamePositionDistance(f){return GAME.min*Math.pow(GAME.max/GAME.min,clamp(f,0,1))}
+function gameObjectFraction(p){return p.infinity?1:gameDistancePosition(p.u+C.d)}
+function gameObjectDistance(){return app.physics.infinity?Infinity:app.physics.u+C.d}
+function chooseRandom(a){return a[Math.floor(Math.random()*a.length)]}
+function clearDraft(){for(const id of ['answerPower','answerFocal','answerPoint','answerWorking'])$(id).value='';for(const id of ['answerLens','answerReason'])$(id).value='';$('focalUnit').value='1';$('pointUnit').value='1'}
+function setObjectDistance(s){
+  if(!gameActive())return;
+  if(s===Infinity){app.physics.infinity=true;app.physics.u=GAME.max-C.d}
+  else{app.physics.infinity=false;app.physics.u=clamp(s,GAME.min,GAME.max)-C.d}
+  scheduleRender();
+}
+function caseEye(c){
+  const p=defaults();p.E=c.kind==='far'?-1/c.point:0;p.condition=c.kind==='far'?'myopia':'normal';
+  p.Amax=c.kind==='far'?4:1/c.point;p.mode='automatic';p.manualA=0;
+  p.infinity=c.kind==='far';p.u=c.kind==='near'?GAME.reading-C.d:GAME.max-C.d;
+  p.Pc=c.mode==='reverse'?c.power:0;p.lens=c.mode==='reverse';p.theory=false;return p;
+}
+function newGameCase(){
+  const kind=lesson.mode==='forward'?'far':lesson.bank==='mixed'?chooseRandom(['far','near']):lesson.bank;
+  let point,power,key;
+  for(let i=0;i<25;i++){
+    if(lesson.mode==='forward'){point=chooseRandom(GAME.farDistances);power=-1/(point-lesson.gap)}
+    else if(kind==='far'){power=chooseRandom(GAME.farPowers);point=lesson.gap-1/power}
+    else{power=chooseRandom(GAME.nearPowers);point=lesson.gap+1/(1/(GAME.reading-lesson.gap)-power)}
+    key=lesson.mode+kind+point;if(key!==lesson.previous)break;
+  }
+  lesson.previous=key;lesson.case={id:lesson.nextId++,mode:lesson.mode,kind,point,power,focal:1/power,gap:lesson.gap,tries:0,hints:0,solved:false,revealed:false,award:0};
+  app.physics=caseEye(lesson.case);app.error=null;clearDraft();lesson.feedback={key:'readyFeedback',kind:''};scheduleRender();
+}
+function uncorrectedRange(){
+  const p=app.physics;
+  return {near:1/(p.Amax-p.E),far:p.E<0?-1/p.E:Infinity};
+}
+function rangeLocation(){
+  const range=uncorrectedRange(),s=gameObjectDistance();
+  return s<range.near-1e-10?'near':s>range.far+1e-10?'far':'inside';
+}
+function parseNumber(id){const raw=$(id).value.trim().replace(/\u2212/g,'-');return raw&&/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i.test(raw)?Number(raw):NaN}
+function within(value,target,floor){return Number.isFinite(value)&&Math.abs(value-target)<=Math.max(floor,Math.abs(target)*.01)+1e-10}
+function submittedAnswer(){return {lens:$('answerLens').value,power:parseNumber('answerPower'),focal:parseNumber('answerFocal')*Number($('focalUnit').value),point:parseNumber('answerPoint')*Number($('pointUnit').value),reason:$('answerReason').value,notes:$('answerWorking').value.trim(),rawP:$('answerPower').value.trim(),rawF:$('answerFocal').value.trim(),rawPoint:$('answerPoint').value.trim(),fUnit:$('focalUnit').value,pUnit:$('pointUnit').value}}
+function recordCheck(a,result,award=0){const c=lesson.case;lesson.logs.push(Object.freeze({id:c.id,mode:c.mode,kind:c.kind,gap:c.gap,given:c.mode==='forward'?c.point:c.power,try:c.tries,hints:c.hints,result,award,time:new Date().toISOString(),distance:gameObjectDistance(),answer:Object.freeze({...a})}))}
+function setFeedback(key,kind='bad',args={}){lesson.feedback={key,kind,args};renderGame()}
+function checkGame(event){
+  event.preventDefault();if(!gameActive()||caseDone())return;
+  const c=lesson.case,a=submittedAnswer();
+  if(!a.reason||(c.mode==='forward'&&(!a.lens||!Number.isFinite(a.power)||!Number.isFinite(a.focal)))||(c.mode==='reverse'&&!Number.isFinite(a.point))){setFeedback('missingFields');return}
+  if((c.mode==='forward'&&(Math.abs(a.power)>12||a.focal===0))||(c.mode==='reverse'&&a.point<=0)){setFeedback('badNumber');return}
+  c.tries++;lesson.checks++;
+  if(c.mode==='forward'){app.physics.Pc=a.power;app.physics.lens=true}
+  let error=null;
+  if(c.mode==='forward'){
+    if(a.lens!=='diverging')error='wrongLens';else if(!within(a.power,c.power,.015))error='wrongPower';else if(!within(a.focal,c.focal,.002))error='wrongFocal';
+  }else if(!within(a.point,c.point,.003))error='wrongPoint';
+  if(!error&&a.reason!=='virtual')error='wrongReason';
+  if(error){recordCheck(a,'incorrectWord');lesson.feedback={key:error,kind:'bad'}}
+  else{
+    c.solved=true;c.award=Math.max(0,([10,7,4][c.tries-1]??2)-2*c.hints);lesson.score+=c.award;lesson.solved++;
+    app.physics.Pc=c.power;app.physics.lens=true;recordCheck(a,'correctWord',c.award);lesson.feedback={key:'correctFeedback',kind:'good',args:{points:c.award}};
+  }
+  scheduleRender();
+}
+function markSkipped(){if(!caseDone())recordCheck(submittedAnswer(),'skipWord')}
+function revealGame(){
+  if(caseDone()||!window.confirm(t('revealConfirm')))return;
+  lesson.case.revealed=true;app.physics.Pc=lesson.case.power;app.physics.lens=true;
+  recordCheck(submittedAnswer(),'revealWord');lesson.feedback={key:'revealedFeedback',kind:'bad'};scheduleRender();
+}
+function changeGameMode(mode){
+  if(mode===lesson.mode)return;
+  if(mode==='lab'){
+    if(!caseDone()&&!window.confirm(t('labConfirm')))return;markSkipped();lesson.mode='lab';app.physics={...laboratorySnapshot};scheduleRender();
+  }else{
+    if(lesson.mode==='lab')laboratorySnapshot={...app.physics};
+    else{if(!caseDone()&&lesson.case.tries>0&&!window.confirm(t('skipConfirm')))return;markSkipped()}
+    lesson.mode=mode;newGameCase();
+  }
+}
+function addGameText(parent,tag,text,className=''){const el=document.createElement(tag);el.textContent=text;if(className)el.className=className;parent.append(el);return el}
+function renderLiveReadings(suffix,m){
+  const parent=$('live'+suffix);parent.replaceChildren();
+  addGameText(parent,'p',t('liveA',{required:number(m.requiredA,3,true),actual:number(m.A,3),max:number(app.physics.Amax,3)}));
+  addGameText(parent,'p',t('liveFocus',{q:m.q===null?'∞':number(m.q*1000,6),delta:m.q===null?'—':number((m.q-C.r)*1000,6,true)}));
+  const key=m.requiredA< -1e-8?'liveNegative':m.requiredA>app.physics.Amax+1e-8?'liveExceeded':'liveInside';
+  addGameText(parent,'p',t(key),'explanation');
+  $('status'+suffix).textContent=t(m.status==='sharp'?'liveSharp':m.status);
+}
+function renderExplorer(){
+  const c=lesson.case,s=gameObjectDistance(),r=uncorrectedRange(),known=c.mode==='forward'||caseDone();
+  const pos=gameDistancePosition(s),np=100*gameDistancePosition(r.near),fp=100*gameDistancePosition(r.far);
+  $('objectDrag').value=Math.round(pos*1000);$('objectTag').style.left=(pos*100)+'%';
+  $('objectDrag').style.setProperty('--range-fill',`linear-gradient(to right,#e6c6d7 0%,#e6c6d7 ${np}%,#7cc9a6 ${np}%,#7cc9a6 ${fp}%,#edc394 ${fp}%,#edc394 100%)`);
+  $('objectDrag').setAttribute('aria-valuetext',Number.isFinite(s)?number(s,3)+' m':t('infinity'));
+  const nval=known?number(r.near*100,2)+' cm':t('unknownMarker');
+  const fval=Number.isFinite(r.far)?known?number(r.far*100,2)+' cm':t('unknownMarker'):t('infiniteMarker');
+  $('nearMarker').textContent=t('nearMarker',{value:nval});$('farMarker').textContent=t('farMarker',{value:fval});
+  $('nearMarker').style.left=np+'%';$('farMarker').style.left=fp+'%';$('farMarker').classList.toggle('overlap',fp-np<16);
+  $('distanceReadout').textContent=Number.isFinite(s)?t('distanceReadout',{value:number(s*100,2)}):t('distanceInfinity');
+  $('objectDistance').value=Number.isFinite(s)?Number(s.toFixed(5)):'';$('objectDistance').placeholder=s===Infinity?'∞':'';
+  $('snapNear').hidden=!known;$('snapFar').hidden=!known;
+  document.querySelectorAll('[data-explore-distance]').forEach(button=>{const d=button.dataset.exploreDistance;button.setAttribute('aria-pressed',String(d==='infinity'?s===Infinity:Math.abs(s-Number(d))<1e-8))});
+  const loc=rangeLocation();$('rangeStatus').className='range-status '+loc;$('rangeStatus').textContent=t(loc==='near'?'rangeNear':loc==='far'?'rangeFar':'rangeInside');
+  $('rangeExplanation').textContent=t(loc==='near'?'explainNear':loc==='far'?'explainFar':'explainInside');
+}
+function solutionEquations(c){
+  if(c.kind==='far')return [`v = −(F − d) = ${number(-(c.point-c.gap),5,true)} m`,`P = 1/∞ + 1/v = ${number(c.power,5,true)} D`,`f = 1/P = ${number(c.focal,5,true)} m`,`F = d − 1/P = ${number(c.point,5)} m`];
+  const u=GAME.reading-c.gap;return [`u = 0.250 − d = ${number(u,3)} m`,`1/v = P − 1/u; v = ${number(-(c.point-c.gap),5,true)} m`,`N = d − v = d + 1/(1/u − P) = ${number(c.point,5)} m`];
+}
+const gameLogHeaders=['logCase','logGame','logPoint','logTime','logGiven','logGap','logTry','logAnswer','logDistance','logNotes','logHints','logResult','logScore'];
+function logValues(row){const a=row.answer;return [row.id,t(row.mode==='forward'?'gameForward':'gameReverse'),t(row.kind==='far'?'farWord':'nearWord'),row.time,row.mode==='forward'?number(row.given*100,2)+' cm':number(row.given,2,true)+' D',row.gap*1000,row.try,row.mode==='forward'?`${a.lens?t(a.lens):'—'}; P=${a.rawP||'—'} D; f=${a.rawF||'—'} ${a.fUnit==='1'?'m':'cm'}; ${a.reason}`:`${a.rawPoint||'—'} ${a.pUnit==='1'?'m':'cm'}; ${a.reason}`,Number.isFinite(row.distance)?number(row.distance,5):t('infinity'),a.notes,row.hints,t(row.result),row.award]}
+function renderGameLog(){
+  const tr=document.createElement('tr');gameLogHeaders.forEach(key=>{addGameText(tr,'th',t(key)).scope='col'});$('gameLogHead').replaceChildren(tr);$('gameLogBody').replaceChildren();
+  lesson.logs.forEach(row=>{const tr=document.createElement('tr');logValues(row).forEach(value=>addGameText(tr,'td',String(value)));$('gameLogBody').append(tr)});
+  $('emptyGameLog').hidden=lesson.logs.length>0;$('exportAttempts').disabled=lesson.logs.length===0;
+}
+function exportGameCSV(){
+  const escape=value=>{let s=String(value??'');if(/^\s*[=+@\t\r]/.test(s)||(/^\s*-/.test(s)&&!Number.isFinite(Number(s))))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'};
+  const rows=[gameLogHeaders.map(tKey=>t(tKey)),...lesson.logs.map(logValues)],blob=new Blob(['\uFEFF'+rows.map(row=>row.map(escape).join(',')).join('\r\n')+'\r\n'],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=t('lessonCsv')+'.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function renderGame(){
+  const active=gameActive();document.body.dataset.lesson=String(active);
+  for(const id of ['lessonSettings','lessonBanner','gameControls','explorer','gameLogPanel','liveBefore','liveAfter'])$(id).hidden=!active;
+  $('caseSolution').hidden=!active||!caseDone();
+  for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===lesson.mode));
+  if(!active)return;
+  const c=lesson.case,done=caseDone();$('lessonGap').value=String(lesson.gap);$('reverseKind').value=lesson.bank;$('reverseSetting').hidden=lesson.mode!=='reverse';
+  $('caseNumber').textContent=t('caseCount',{id:c.id});$('caseTitle').textContent=t(c.mode==='forward'?'forwardTitle':c.kind==='far'?'reverseFarTitle':'reverseNearTitle');
+  $('caseGiven').textContent=t(c.mode==='forward'?'givenFar':'givenPower',{value:c.mode==='forward'?number(c.point*100,1):number(c.power,2,true)});
+  $('caseTask').textContent=t(c.mode==='forward'?'forwardTask':c.kind==='far'?'reverseFarTask':'reverseNearTask');$('caseModelNote').textContent=t(c.kind==='far'?'farModelNote':'nearModelNote',{gap:c.gap*1000});
+  $('forwardFields').hidden=c.mode!=='forward';$('reverseFields').hidden=c.mode!=='reverse';$('answerPointLabel').textContent=t(c.kind==='far'?'answerFar':'answerNear');
+  $('feedback').textContent=t(lesson.feedback.key,lesson.feedback.args||{});$('feedback').className='feedback '+(lesson.feedback.kind||'');
+  $('hintText').hidden=c.hints===0;if(c.hints)$('hintText').textContent=t((c.kind==='far'?'hintFar':'hintNear')+c.hints);
+  $('checkAnswer').disabled=done;$('gameHint').disabled=done||c.hints>=3;$('revealCase').disabled=done;
+  $('scorePoints').textContent=lesson.score;$('scoreSolved').textContent=lesson.solved;$('scoreAttempts').textContent=lesson.checks;
+  $('trialEnabled').checked=app.physics.lens;$('trialPower').value=app.physics.Pc;$('trialPower').disabled=c.mode==='reverse';
+  $('trialValue').textContent=number(app.physics.Pc,4,true)+' D';
+  const views=document.querySelectorAll('.view');views[0].querySelector('.view-heading').textContent=t('beforeHeading');views[1].querySelector('.view-heading').textContent=t(app.physics.lens?'afterHeading':'noLensHeading');
+  document.querySelector('.stage-top h2').textContent=t('gameStage');document.querySelectorAll('.scale-note').forEach(el=>el.textContent=t('gameScale'));document.querySelector('footer').textContent=t('gameFooter');
+  renderExplorer();const models=currentModels();renderLiveReadings('Before',models.before);renderLiveReadings('After',models.after);renderGameLog();
+  if(done){const el=$('caseSolution');el.replaceChildren();addGameText(el,'h3',t('solutionTitle'));addGameText(el,'p',t('solutionConvention'));solutionEquations(c).forEach(text=>addGameText(el,'p',text,'formula'));addGameText(el,'p',t(c.kind==='far'?'solutionFar':'solutionNear'))}
+}
+const laboratoryRender=renderAll;
+renderAll=function(){laboratoryRender();renderGame()};
+$('gameForm').addEventListener('submit',checkGame);
+$('objectDrag').addEventListener('input',event=>setObjectDistance(gamePositionDistance(Number(event.target.value)/1000)));
+$('objectDistance').addEventListener('change',event=>{const raw=event.target.value.trim(),s=Number(raw);if(!raw||!Number.isFinite(s)||s<GAME.min||s>GAME.max){setFeedback('distanceError');renderExplorer();return}setObjectDistance(s)});
+for(const b of document.querySelectorAll('[data-explore-distance]'))b.addEventListener('click',()=>setObjectDistance(b.dataset.exploreDistance==='infinity'?Infinity:Number(b.dataset.exploreDistance)));
+$('snapNear').addEventListener('click',()=>setObjectDistance(uncorrectedRange().near));$('snapFar').addEventListener('click',()=>setObjectDistance(uncorrectedRange().far));
+for(const id of ['canvasBefore','canvasAfter']){
+  const canvas=$(id);let dragPointer=null;
+  const move=event=>{const r=canvas.getBoundingClientRect(),x=event.clientX-r.left,xg=r.width*.62-C.d*r.width*.33/.027;const fraction=1-clamp((x-25)/(xg-42-25),0,1);setObjectDistance(gamePositionDistance(fraction))};
+  canvas.addEventListener('pointerdown',event=>{if(!gameActive())return;const r=canvas.getBoundingClientRect(),xg=r.width*.62-C.d*r.width*.33/.027;if(event.clientX-r.left>xg-18)return;dragPointer=event.pointerId;canvas.setPointerCapture(dragPointer);move(event);event.preventDefault()});
+  canvas.addEventListener('pointermove',event=>{if(event.pointerId===dragPointer)move(event)});
+  const finish=event=>{if(event.pointerId===dragPointer){if(canvas.hasPointerCapture(dragPointer))canvas.releasePointerCapture(dragPointer);dragPointer=null}};
+  canvas.addEventListener('pointerup',finish);canvas.addEventListener('pointercancel',finish);
+}
+$('trialPower').addEventListener('input',event=>{if(!gameActive()||lesson.case.mode!=='forward')return;app.physics.Pc=Number(event.target.value);app.physics.lens=true;$('answerPower').value=event.target.value;scheduleRender()});
+$('trialEnabled').addEventListener('change',event=>{app.physics.lens=event.target.checked;scheduleRender()});
+$('gameHint').addEventListener('click',()=>{if(!caseDone()&&lesson.case.hints<3){lesson.case.hints++;renderGame()}});
+$('revealCase').addEventListener('click',revealGame);
+$('nextCase').addEventListener('click',()=>{if(!caseDone()){if(!window.confirm(t('skipConfirm')))return;markSkipped()}newGameCase()});
+for(const b of document.querySelectorAll('[data-mode]'))b.addEventListener('click',()=>changeGameMode(b.dataset.mode));
+$('lessonGap').addEventListener('change',event=>{if(!caseDone()&&lesson.case.tries>0&&!window.confirm(t('skipConfirm'))){event.target.value=String(lesson.gap);return}markSkipped();lesson.gap=Number(event.target.value);newGameCase()});
+$('reverseKind').addEventListener('change',event=>{if(!caseDone()&&lesson.case.tries>0&&!window.confirm(t('skipConfirm'))){event.target.value=lesson.bank;return}markSkipped();lesson.bank=event.target.value;newGameCase()});
+$('exportAttempts').addEventListener('click',exportGameCSV);
+$('resetGame').addEventListener('click',()=>{if(!window.confirm(t('resetConfirmGame')))return;lesson.logs=[];lesson.score=0;lesson.solved=0;lesson.checks=0;lesson.nextId=1;newGameCase()});
+newGameCase();
+
 renderAll();
 </script>
 </body>
